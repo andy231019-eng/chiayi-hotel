@@ -463,6 +463,165 @@
 
     .success-back-btn:hover { background: rgba(255, 255, 255, 0.16); }
 
+    /* ── Admin-clickable booked cal days ── */
+    .cal-day.admin-clickable {
+      cursor: pointer !important;
+      text-decoration: none !important;
+      color: rgba(255, 217, 80, 0.7) !important;
+      border: 1px dashed rgba(255, 217, 80, 0.4);
+    }
+
+    .cal-day.admin-clickable:hover {
+      background: rgba(255, 217, 80, 0.14) !important;
+      color: #ffd950 !important;
+    }
+
+    /* ── Booking Detail Modal ── */
+    #booking-detail-overlay,
+    #delete-confirm-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.65);
+      padding: 1.5rem;
+      overflow-y: auto;
+    }
+
+    #booking-detail-overlay.open,
+    #delete-confirm-overlay.open {
+      display: flex;
+    }
+
+    #booking-detail-box {
+      background: #1c1c1c;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+      max-height: 88vh;
+      overflow-y: auto;
+    }
+
+    .bd-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.9rem;
+      letter-spacing: 0.1em;
+      color: #ffd950;
+    }
+
+    .bd-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .bd-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.4);
+      letter-spacing: 0.04em;
+    }
+
+    .bd-value {
+      font-size: 0.95rem;
+      color: #fff;
+      font-weight: 500;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .bd-input,
+    .bd-textarea {
+      width: 100%;
+      padding: 0.75rem 0.9rem;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .bd-input:focus,
+    .bd-textarea:focus { border-color: rgba(255, 217, 80, 0.5); }
+
+    .bd-input::placeholder,
+    .bd-textarea::placeholder { color: rgba(255, 255, 255, 0.2); }
+
+    input[type="date"].bd-input { color-scheme: dark; }
+
+    .bd-textarea {
+      resize: vertical;
+      min-height: 72px;
+    }
+
+    .bd-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 0.4rem;
+    }
+
+    .bd-btn {
+      width: 100%;
+      padding: 0.85rem;
+      border-radius: 50px;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      font-size: 0.88rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .bd-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .bd-save   { background: #ffd950; color: #111; }
+    .bd-delete { background: rgba(255, 91, 91, 0.12); color: #ff5b5b; border: 1px solid rgba(255, 91, 91, 0.3); }
+    .bd-close  { background: rgba(255, 255, 255, 0.07); color: #fff; border: 1px solid rgba(255, 255, 255, 0.14); }
+
+    /* Delete confirm */
+    #delete-confirm-box {
+      background: #1c1c1c;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem 1.5rem;
+      width: 100%;
+      max-width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+      text-align: center;
+    }
+
+    .delete-confirm-text {
+      font-size: 1rem;
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    .delete-confirm-actions {
+      display: flex;
+      gap: 0.7rem;
+    }
+
+    .delete-confirm-actions .bd-btn { flex: 1; }
+
     /* ── Admin gear button ── */
     #admin-toggle {
       position: fixed;
@@ -766,6 +925,65 @@
     <span class="section-label">關於我們</span>
   </section>
 
+  <!-- ── Booking Detail Modal (Admin) ── -->
+  <div id="booking-detail-overlay" role="dialog" aria-modal="true">
+    <div id="booking-detail-box">
+      <h2 class="bd-title">訂房資訊</h2>
+
+      <div class="bd-field">
+        <div class="bd-label">入住日（不可修改）</div>
+        <div class="bd-value" id="bd-checkin-display"></div>
+      </div>
+
+      <div class="bd-field">
+        <label class="bd-label" for="bd-checkout">退房日</label>
+        <input class="bd-input" type="date" id="bd-checkout" />
+      </div>
+
+      <div class="bd-field">
+        <label class="bd-label" for="bd-name">訂房大名</label>
+        <input class="bd-input" type="text" id="bd-name" />
+      </div>
+
+      <div class="bd-field">
+        <label class="bd-label" for="bd-phone">聯絡電話</label>
+        <input class="bd-input" type="tel" id="bd-phone" inputmode="numeric" />
+      </div>
+
+      <div class="bd-field">
+        <label class="bd-label" for="bd-email">聯絡 Email</label>
+        <input class="bd-input" type="email" id="bd-email" />
+      </div>
+
+      <div class="bd-field">
+        <label class="bd-label" for="bd-arrival">預計抵達時間</label>
+        <input class="bd-input" type="time" id="bd-arrival" />
+      </div>
+
+      <div class="bd-field">
+        <label class="bd-label" for="bd-note">特殊備注</label>
+        <textarea class="bd-textarea" id="bd-note" placeholder="（無）"></textarea>
+      </div>
+
+      <div class="bd-actions">
+        <button class="bd-btn bd-save"   id="bd-save">儲存修改</button>
+        <button class="bd-btn bd-delete" id="bd-delete">刪除訂房</button>
+        <button class="bd-btn bd-close"  id="bd-close">關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Delete Confirm ── -->
+  <div id="delete-confirm-overlay" role="dialog" aria-modal="true">
+    <div id="delete-confirm-box">
+      <p class="delete-confirm-text">確定要刪除此筆訂房？</p>
+      <div class="delete-confirm-actions">
+        <button class="bd-btn bd-close"  id="delete-cancel">取消</button>
+        <button class="bd-btn bd-delete" id="delete-confirm-btn">確定刪除</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Admin gear button ── -->
   <button id="admin-toggle" aria-label="Admin">
     <span class="gear-icon">⚙</span>
@@ -876,6 +1094,7 @@
 
         uploadArea.classList.remove('visible');
       }
+      renderCalendar();
     }
 
     function saveTitleHandler() {
@@ -1000,7 +1219,8 @@
       for (let d = 1; d <= daysInMonth; d++) {
         const ds = fmtDate(calYear, calMonth, d);
         const isPast = ds < today;
-        const isDisabled = disabled.has(ds) || isPast;
+        const isBooked = disabled.has(ds);
+        const isDisabled = isBooked || isPast;
 
         let cls = 'cal-day';
         if (isDisabled) cls += ' disabled';
@@ -1012,7 +1232,15 @@
         if (ds === selCheckOut) cls += ' checkout';
         if (selCheckIn && selCheckOut && ds > selCheckIn && ds < selCheckOut) cls += ' in-range';
 
-        const attr = isDisabled ? '' : `onclick="calDayClick('${ds}')"`;
+        let attr;
+        if (isBooked && adminMode) {
+          cls += ' admin-clickable';
+          attr = `onclick="adminCalDayClick('${ds}')"`;
+        } else if (!isDisabled) {
+          attr = `onclick="calDayClick('${ds}')"`;
+        } else {
+          attr = '';
+        }
         html += `<div class="${cls}" ${attr}>${d}</div>`;
       }
 
@@ -1140,6 +1368,80 @@
       document.getElementById('booking-success').classList.remove('visible');
       document.getElementById('booking-form').style.display = 'flex';
       validateBookingForm();
+    });
+
+    // ── Booking Detail Modal (Admin) ──
+    let editingCheckIn = null;
+
+    function adminCalDayClick(ds) {
+      const booking = getBookings().find(b => b.checkIn === ds);
+      if (!booking) return;
+      openBookingDetail(booking);
+    }
+
+    function openBookingDetail(booking) {
+      editingCheckIn = booking.checkIn;
+      document.getElementById('bd-checkin-display').textContent = booking.checkIn.replace(/-/g, '/');
+      document.getElementById('bd-checkout').value  = booking.checkOut    || '';
+      document.getElementById('bd-name').value      = booking.name        || '';
+      document.getElementById('bd-phone').value     = booking.phone       || '';
+      document.getElementById('bd-email').value     = booking.email       || '';
+      document.getElementById('bd-arrival').value   = booking.arrivalTime || '';
+      document.getElementById('bd-note').value      = booking.note        || '';
+      document.getElementById('booking-detail-overlay').classList.add('open');
+    }
+
+    function closeBookingDetail() {
+      document.getElementById('booking-detail-overlay').classList.remove('open');
+      editingCheckIn = null;
+    }
+
+    document.getElementById('bd-close').addEventListener('click', closeBookingDetail);
+
+    document.getElementById('booking-detail-overlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('booking-detail-overlay')) closeBookingDetail();
+    });
+
+    document.getElementById('bd-save').addEventListener('click', () => {
+      if (!editingCheckIn) return;
+      const bookings = getBookings();
+      const idx = bookings.findIndex(b => b.checkIn === editingCheckIn);
+      if (idx === -1) return;
+      bookings[idx] = {
+        ...bookings[idx],
+        checkOut:    document.getElementById('bd-checkout').value,
+        name:        document.getElementById('bd-name').value.trim(),
+        phone:       document.getElementById('bd-phone').value.trim(),
+        email:       document.getElementById('bd-email').value.trim(),
+        arrivalTime: document.getElementById('bd-arrival').value,
+        note:        document.getElementById('bd-note').value.trim(),
+      };
+      localStorage.setItem(BOOKINGS_KEY, JSON.stringify(bookings));
+      closeBookingDetail();
+      renderCalendar();
+    });
+
+    document.getElementById('bd-delete').addEventListener('click', () => {
+      document.getElementById('delete-confirm-overlay').classList.add('open');
+    });
+
+    document.getElementById('delete-cancel').addEventListener('click', () => {
+      document.getElementById('delete-confirm-overlay').classList.remove('open');
+    });
+
+    document.getElementById('delete-confirm-overlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('delete-confirm-overlay')) {
+        document.getElementById('delete-confirm-overlay').classList.remove('open');
+      }
+    });
+
+    document.getElementById('delete-confirm-btn').addEventListener('click', () => {
+      if (!editingCheckIn) return;
+      const bookings = getBookings().filter(b => b.checkIn !== editingCheckIn);
+      localStorage.setItem(BOOKINGS_KEY, JSON.stringify(bookings));
+      document.getElementById('delete-confirm-overlay').classList.remove('open');
+      closeBookingDetail();
+      renderCalendar();
     });
 
     // Init calendar
