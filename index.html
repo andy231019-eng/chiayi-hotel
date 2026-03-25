@@ -433,6 +433,37 @@
       color: rgba(255, 255, 255, 0.25);
     }
 
+    /* select styling */
+    .form-select {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.4)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      cursor: pointer;
+    }
+
+    .form-select:focus { border-color: #6FA28E; }
+
+    .form-select.error { border-color: #ff5b5b; }
+
+    .form-select option {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .form-select option[value=""] { color: rgba(255, 255, 255, 0.35); }
+
     /* time input color fix */
     input[type="time"]::-webkit-calendar-picker-indicator {
       filter: invert(1) opacity(0.4);
@@ -1027,6 +1058,24 @@
         </div>
 
         <div class="form-field">
+          <label class="form-label" for="f-guests">入住人數<span class="req">*</span></label>
+          <select class="form-select" id="f-guests">
+            <option value="">請選擇入住人數</option>
+            <option value="1">1 位</option>
+            <option value="2">2 位</option>
+            <option value="3">3 位</option>
+            <option value="4">4 位</option>
+            <option value="5">5 位</option>
+            <option value="6">6 位</option>
+            <option value="7">7 位</option>
+            <option value="8">8 位</option>
+            <option value="9">9 位</option>
+            <option value="10">10 位</option>
+          </select>
+          <span class="field-error" id="err-guests">請選擇入住人數</span>
+        </div>
+
+        <div class="form-field">
           <label class="form-label" for="f-phone">聯絡電話<span class="req">*</span></label>
           <input class="form-input" type="tel" id="f-phone" inputmode="numeric" placeholder="請輸入電話號碼" autocomplete="tel" />
           <span class="field-error" id="err-phone">請填寫聯絡電話</span>
@@ -1101,6 +1150,23 @@
       <div class="bd-field">
         <label class="bd-label" for="bd-name">訂房大名</label>
         <input class="bd-input" type="text" id="bd-name" />
+      </div>
+
+      <div class="bd-field">
+        <label class="bd-label" for="bd-guests">入住人數</label>
+        <select class="bd-input form-select" id="bd-guests">
+          <option value="">請選擇入住人數</option>
+          <option value="1">1 位</option>
+          <option value="2">2 位</option>
+          <option value="3">3 位</option>
+          <option value="4">4 位</option>
+          <option value="5">5 位</option>
+          <option value="6">6 位</option>
+          <option value="7">7 位</option>
+          <option value="8">8 位</option>
+          <option value="9">9 位</option>
+          <option value="10">10 位</option>
+        </select>
       </div>
 
       <div class="bd-field">
@@ -1492,21 +1558,24 @@
 
     function validateBookingForm() {
       const name    = document.getElementById('f-name').value.trim();
+      const guests  = document.getElementById('f-guests').value;
       const phone   = document.getElementById('f-phone').value.trim();
       const email   = document.getElementById('f-email').value.trim();
       const arrival = document.getElementById('f-arrival').value;
       const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
       document.getElementById('submit-btn').disabled =
-        !(name && phone && email && emailOk && arrival && selCheckIn && selCheckOut);
+        !(name && guests && phone && email && emailOk && arrival && selCheckIn && selCheckOut);
     }
 
     ['f-name', 'f-phone', 'f-email', 'f-arrival'].forEach(id => {
       document.getElementById(id).addEventListener('input', validateBookingForm);
     });
+    document.getElementById('f-guests').addEventListener('change', validateBookingForm);
 
     document.getElementById('booking-form').addEventListener('submit', e => {
       e.preventDefault();
       const name    = document.getElementById('f-name').value.trim();
+      const guests  = document.getElementById('f-guests').value;
       const phone   = document.getElementById('f-phone').value.trim();
       const email   = document.getElementById('f-email').value.trim();
       const arrival = document.getElementById('f-arrival').value;
@@ -1521,6 +1590,7 @@
         if (!ok) hasError = true;
       };
       check(name,    'err-name',    'f-name');
+      check(guests,  'err-guests',  'f-guests');
       check(phone,   'err-phone',   'f-phone');
       check(email && emailOk, 'err-email', 'f-email');
       check(arrival, 'err-arrival', 'f-arrival');
@@ -1528,7 +1598,7 @@
       if (hasError || !selCheckIn || !selCheckOut) return;
 
       const bookings = getBookings();
-      bookings.push({ checkIn: selCheckIn, checkOut: selCheckOut, name, phone, email, arrivalTime: arrival, note, createdAt: new Date().toISOString() });
+      bookings.push({ checkIn: selCheckIn, checkOut: selCheckOut, name, guests, phone, email, arrivalTime: arrival, note, createdAt: new Date().toISOString() });
       localStorage.setItem(BOOKINGS_KEY, JSON.stringify(bookings));
 
       selCheckIn = null;
@@ -1561,6 +1631,7 @@
       document.getElementById('bd-checkin-display').textContent = booking.checkIn.replace(/-/g, '/');
       document.getElementById('bd-checkout').value  = booking.checkOut    || '';
       document.getElementById('bd-name').value      = booking.name        || '';
+      document.getElementById('bd-guests').value   = booking.guests      || '';
       document.getElementById('bd-phone').value     = booking.phone       || '';
       document.getElementById('bd-email').value     = booking.email       || '';
       document.getElementById('bd-arrival').value   = booking.arrivalTime || '';
@@ -1588,6 +1659,7 @@
         ...bookings[idx],
         checkOut:    document.getElementById('bd-checkout').value,
         name:        document.getElementById('bd-name').value.trim(),
+        guests:      document.getElementById('bd-guests').value,
         phone:       document.getElementById('bd-phone').value.trim(),
         email:       document.getElementById('bd-email').value.trim(),
         arrivalTime: document.getElementById('bd-arrival').value,
