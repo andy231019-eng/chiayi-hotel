@@ -21,21 +21,75 @@
       padding: 0;
     }
 
-    html {
-      scroll-behavior: smooth;
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
     }
 
     body {
       font-family: 'Outfit', sans-serif;
       background: #0e0e0e;
       color: #fff;
+    }
+
+    /* ── Page switching layout ── */
+    .page-section {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+      overflow-y: auto;
       overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .page-section.active-section {
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 10;
+    }
+
+    /* ── Back button bar ── */
+    .back-bar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      padding: 1rem 1.2rem 0.5rem;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 50px;
+      color: rgba(255, 255, 255, 0.85);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.45rem 1rem;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
     }
 
     /* ── Hero ── */
     #hero {
-      position: relative;
-      height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -141,27 +195,31 @@
       cursor: text;
     }
 
-    /* ── Sections ── */
-    .section {
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
     #booking {
       background: #0e0e0e;
-      align-items: flex-start;
-      justify-content: flex-start;
-      padding: 5rem 1.5rem 4rem;
+    }
+
+    .booking-section-inner {
+      padding: 0 1.5rem 4rem;
     }
 
     #rooms {
       background: #111;
+      display: flex;
+      flex-direction: column;
     }
 
     #about {
       background: #0e0e0e;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .placeholder-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .section-label {
@@ -822,7 +880,7 @@
 <body>
 
   <!-- ── Hero ── -->
-  <section id="hero">
+  <section id="hero" class="page-section active-section">
     <div id="bg-layer"></div>
 
     <!-- Upload overlay (admin only) -->
@@ -837,16 +895,19 @@
     <div id="hero-content">
       <h1 id="site-title" spellcheck="false">CHIAYI</h1>
       <div class="btn-group">
-        <button class="glass-btn" id="btn-booking" onclick="scrollTo('#booking')">Booking Now</button>
-        <button class="glass-btn" id="btn-rooms"   onclick="scrollTo('#rooms')">Room Info</button>
-        <button class="glass-btn" id="btn-about"   onclick="scrollTo('#about')">About</button>
+        <button class="glass-btn" id="btn-booking" onclick="showSection('booking')">Booking Now</button>
+        <button class="glass-btn" id="btn-rooms"   onclick="showSection('rooms')">Room Info</button>
+        <button class="glass-btn" id="btn-about"   onclick="showSection('about')">About</button>
       </div>
     </div>
   </section>
 
   <!-- ── Booking Section ── -->
-  <section class="section" id="booking">
-    <div class="booking-inner">
+  <section class="page-section" id="booking">
+    <div class="back-bar">
+      <button class="back-btn" onclick="showSection('hero')">&#8592; 返回首頁</button>
+    </div>
+    <div class="booking-inner booking-section-inner">
       <h2 class="section-title">訂房專區</h2>
 
       <!-- Calendar -->
@@ -916,13 +977,24 @@
     </div>
   </section>
 
-  <!-- ── Placeholder sections ── -->
-  <section class="section" id="rooms">
-    <span class="section-label">客房資訊</span>
+  <!-- ── Rooms Section ── -->
+  <section class="page-section" id="rooms">
+    <div class="back-bar">
+      <button class="back-btn" onclick="showSection('hero')">&#8592; 返回首頁</button>
+    </div>
+    <div class="placeholder-content">
+      <span class="section-label">客房資訊</span>
+    </div>
   </section>
 
-  <section class="section" id="about">
-    <span class="section-label">關於我們</span>
+  <!-- ── About Section ── -->
+  <section class="page-section" id="about">
+    <div class="back-bar">
+      <button class="back-btn" onclick="showSection('hero')">&#8592; 返回首頁</button>
+    </div>
+    <div class="placeholder-content">
+      <span class="section-label">關於我們</span>
+    </div>
   </section>
 
   <!-- ── Booking Detail Modal (Admin) ── -->
@@ -1032,10 +1104,13 @@
 
     let adminMode = false;
 
-    // ── Smooth scroll ──
-    function scrollTo(selector) {
-      const el = document.querySelector(selector);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    // ── Section switching ──
+    function showSection(id) {
+      document.querySelectorAll('.page-section').forEach(s => {
+        s.classList.remove('active-section');
+      });
+      const target = document.getElementById(id);
+      if (target) target.classList.add('active-section');
     }
 
     // ── Load saved values ──
@@ -1082,10 +1157,10 @@
 
         uploadArea.classList.add('visible');
       } else {
-        // Restore scroll onclicks
-        btnBooking.setAttribute('onclick', "scrollTo('#booking')");
-        btnRooms.setAttribute('onclick',   "scrollTo('#rooms')");
-        btnAbout.setAttribute('onclick',   "scrollTo('#about')");
+        // Restore nav onclicks
+        btnBooking.setAttribute('onclick', "showSection('booking')");
+        btnRooms.setAttribute('onclick',   "showSection('rooms')");
+        btnAbout.setAttribute('onclick',   "showSection('about')");
 
         siteTitle.removeEventListener('input', saveTitleHandler);
         btnBooking.removeEventListener('input', saveBtnHandler);
