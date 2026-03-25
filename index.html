@@ -875,6 +875,83 @@
     #bg-upload {
       display: none;
     }
+
+    /* ── Coming Soon Modal ── */
+    #coming-soon-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    #coming-soon-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #coming-soon-box {
+      background: #1c1c1c;
+      border: 1px solid rgba(111, 162, 142, 0.25);
+      border-radius: 20px;
+      padding: 2.2rem 1.8rem;
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.9rem;
+      transform: translateY(8px);
+      transition: transform 0.3s ease;
+    }
+
+    #coming-soon-overlay.open #coming-soon-box {
+      transform: translateY(0);
+    }
+
+    .cs-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.7rem;
+      letter-spacing: 0.08em;
+      color: #6FA28E;
+    }
+
+    .cs-msg {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.92rem;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.6;
+    }
+
+    .cs-close-btn {
+      margin-top: 0.4rem;
+      padding: 0.75rem 2.2rem;
+      background: #6FA28E;
+      border: none;
+      border-radius: 50px;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      font-size: 0.88rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .cs-close-btn:hover {
+      background: #5C8F7B;
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 <body>
@@ -896,8 +973,8 @@
       <h1 id="site-title" spellcheck="false">CHIAYI</h1>
       <div class="btn-group">
         <button class="glass-btn" id="btn-booking" onclick="showSection('booking')">Booking Now</button>
-        <button class="glass-btn" id="btn-rooms"   onclick="showSection('rooms')">Room Info</button>
-        <button class="glass-btn" id="btn-about"   onclick="showSection('about')">About</button>
+        <button class="glass-btn" id="btn-rooms"   onclick="showComingSoonModal()">Room Info</button>
+        <button class="glass-btn" id="btn-about"   onclick="showComingSoonModal()">About</button>
       </div>
     </div>
   </section>
@@ -996,6 +1073,15 @@
       <span class="section-label">關於我們</span>
     </div>
   </section>
+
+  <!-- ── Coming Soon Modal ── -->
+  <div id="coming-soon-overlay">
+    <div id="coming-soon-box">
+      <div class="cs-title">此功能開發中</div>
+      <p class="cs-msg">此頁面尚未開放，敬請期待</p>
+      <button class="cs-close-btn" id="cs-close">關閉</button>
+    </div>
+  </div>
 
   <!-- ── Booking Detail Modal (Admin) ── -->
   <div id="booking-detail-overlay" role="dialog" aria-modal="true">
@@ -1104,6 +1190,22 @@
 
     let adminMode = false;
 
+    // ── Coming Soon Modal ──
+    const comingSoonOverlay = document.getElementById('coming-soon-overlay');
+
+    function showComingSoonModal() {
+      comingSoonOverlay.classList.add('open');
+    }
+
+    function hideComingSoonModal() {
+      comingSoonOverlay.classList.remove('open');
+    }
+
+    document.getElementById('cs-close').addEventListener('click', hideComingSoonModal);
+    comingSoonOverlay.addEventListener('click', e => {
+      if (e.target === comingSoonOverlay) hideComingSoonModal();
+    });
+
     // ── Section switching ──
     function showSection(id) {
       document.querySelectorAll('.page-section').forEach(s => {
@@ -1159,8 +1261,8 @@
       } else {
         // Restore nav onclicks
         btnBooking.setAttribute('onclick', "showSection('booking')");
-        btnRooms.setAttribute('onclick',   "showSection('rooms')");
-        btnAbout.setAttribute('onclick',   "showSection('about')");
+        btnRooms.setAttribute('onclick',   "showComingSoonModal()");
+        btnAbout.setAttribute('onclick',   "showComingSoonModal()");
 
         siteTitle.removeEventListener('input', saveTitleHandler);
         btnBooking.removeEventListener('input', saveBtnHandler);
