@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boutique Hotel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.12);
+      --glass-border: rgba(255, 255, 255, 0.25);
+      --glass-hover: rgba(255, 255, 255, 0.2);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #0e0e0e;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ── Hero ── */
+    #hero {
+      position: relative;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #bg-layer {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1598228723793-52759bba239c?w=1200&q=80');
+      background-size: cover;
+      background-position: center;
+      z-index: 0;
+    }
+
+    #bg-layer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.45) 0%,
+        rgba(0, 0, 0, 0.6) 60%,
+        rgba(0, 0, 0, 0.75) 100%
+      );
+    }
+
+    #hero-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0 1.5rem;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    #site-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5.5rem, 22vw, 10rem);
+      color: #fff;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-align: center;
+      cursor: default;
+      outline: none;
+    }
+
+    #site-title[contenteditable="true"] {
+      border: 2px dashed rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 0.2em 0.4em;
+      cursor: text;
+    }
+
+    .hero-subtitle {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      font-size: clamp(0.7rem, 3vw, 0.9rem);
+      color: rgba(255, 255, 255, 0.75);
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.85rem;
+      width: 100%;
+    }
+
+    .glass-btn {
+      width: 100%;
+      max-width: 280px;
+      padding: 0.85rem 1.5rem;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      text-align: center;
+      outline: none;
+    }
+
+    .glass-btn:hover {
+      background: var(--glass-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .glass-btn[contenteditable="true"] {
+      border: 2px dashed rgba(255, 255, 255, 0.7);
+      cursor: text;
+    }
+
+    /* ── Sections ── */
+    .section {
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #booking {
+      background: #0e0e0e;
+    }
+
+    #rooms {
+      background: #111;
+    }
+
+    #about {
+      background: #0e0e0e;
+    }
+
+    .section-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 14vw, 7rem);
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* ── Admin gear button ── */
+    #admin-toggle {
+      position: fixed;
+      bottom: 1.8rem;
+      right: 1.8rem;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(20, 20, 20, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 900;
+      transition: background 0.2s ease, transform 0.3s ease;
+    }
+
+    #admin-toggle .gear-icon {
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    #admin-toggle.active {
+      background: #ffd950;
+      border-color: #ffd950;
+      color: #111;
+    }
+
+    #admin-toggle.active .gear-icon {
+      transform: rotate(45deg);
+    }
+
+    /* ── Admin badge ── */
+    #admin-badge {
+      position: fixed;
+      top: 1.2rem;
+      right: 1.2rem;
+      background: #ffd950;
+      color: #111;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      padding: 0.4rem 0.9rem;
+      border-radius: 50px;
+      z-index: 900;
+      display: none;
+    }
+
+    /* ── PIN Modal ── */
+    #pin-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    #pin-modal.open {
+      display: flex;
+    }
+
+    #pin-box {
+      background: #1a1a1a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      width: min(320px, 88vw);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    #pin-box h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.1em;
+      color: #fff;
+    }
+
+    #pin-input {
+      width: 100%;
+      padding: 0.85rem 1.2rem;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.4em;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #pin-input:focus {
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+
+    #pin-error {
+      color: #ff5b5b;
+      font-size: 0.82rem;
+      font-family: 'Outfit', sans-serif;
+      display: none;
+    }
+
+    .pin-actions {
+      display: flex;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    .pin-btn {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 50px;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      font-size: 0.88rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .pin-btn:hover {
+      opacity: 0.85;
+      transform: translateY(-1px);
+    }
+
+    #pin-cancel {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    #pin-confirm {
+      background: #ffd950;
+      color: #111;
+    }
+
+    /* ── Upload overlay ── */
+    #upload-area {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: none;
+      align-items: flex-end;
+      justify-content: flex-start;
+      padding: 1.5rem;
+    }
+
+    #upload-area.visible {
+      display: flex;
+    }
+
+    #upload-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      background: rgba(20, 20, 20, 0.75);
+      border: 1px dashed rgba(255, 255, 255, 0.4);
+      border-radius: 50px;
+      color: rgba(255, 255, 255, 0.85);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: background 0.2s;
+    }
+
+    #upload-label:hover {
+      background: rgba(40, 40, 40, 0.85);
+    }
+
+    #bg-upload {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Hero ── -->
+  <section id="hero">
+    <div id="bg-layer"></div>
+
+    <!-- Upload overlay (admin only) -->
+    <div id="upload-area">
+      <label id="upload-label" for="bg-upload">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Change Photo
+      </label>
+      <input type="file" id="bg-upload" accept="image/*" />
+    </div>
+
+    <div id="hero-content">
+      <h1 id="site-title" spellcheck="false">HOTEL</h1>
+      <p class="hero-subtitle">Boutique Hotel</p>
+      <div class="btn-group">
+        <button class="glass-btn" id="btn-booking" onclick="scrollTo('#booking')">Booking Now</button>
+        <button class="glass-btn" id="btn-rooms"   onclick="scrollTo('#rooms')">Room Info</button>
+        <button class="glass-btn" id="btn-about"   onclick="scrollTo('#about')">About</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Placeholder sections ── -->
+  <section class="section" id="booking">
+    <span class="section-label">BOOKING</span>
+  </section>
+
+  <section class="section" id="rooms">
+    <span class="section-label">ROOMS</span>
+  </section>
+
+  <section class="section" id="about">
+    <span class="section-label">ABOUT</span>
+  </section>
+
+  <!-- ── Admin gear button ── -->
+  <button id="admin-toggle" aria-label="Admin">
+    <span class="gear-icon">⚙</span>
+  </button>
+
+  <!-- ── Admin badge ── -->
+  <div id="admin-badge">⚙ Admin Mode</div>
+
+  <!-- ── PIN Modal ── -->
+  <div id="pin-modal" role="dialog" aria-modal="true" aria-label="Admin PIN">
+    <div id="pin-box">
+      <h2>Admin PIN</h2>
+      <input
+        type="password"
+        id="pin-input"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="••••"
+        autocomplete="off"
+      />
+      <span id="pin-error">Incorrect PIN. Try again.</span>
+      <div class="pin-actions">
+        <button class="pin-btn" id="pin-cancel">Cancel</button>
+        <button class="pin-btn" id="pin-confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CORRECT_PIN = '1022';
+
+    const bgLayer   = document.getElementById('bg-layer');
+    const siteTitle = document.getElementById('site-title');
+    const btnBooking = document.getElementById('btn-booking');
+    const btnRooms   = document.getElementById('btn-rooms');
+    const btnAbout   = document.getElementById('btn-about');
+    const adminToggle = document.getElementById('admin-toggle');
+    const adminBadge  = document.getElementById('admin-badge');
+    const pinModal    = document.getElementById('pin-modal');
+    const pinInput    = document.getElementById('pin-input');
+    const pinError    = document.getElementById('pin-error');
+    const pinCancel   = document.getElementById('pin-cancel');
+    const pinConfirm  = document.getElementById('pin-confirm');
+    const uploadArea  = document.getElementById('upload-area');
+    const bgUpload    = document.getElementById('bg-upload');
+
+    let adminMode = false;
+
+    // ── Smooth scroll ──
+    function scrollTo(selector) {
+      const el = document.querySelector(selector);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ── Load saved values ──
+    function loadSaved() {
+      const title = localStorage.getItem('chiayi_title');
+      if (title) siteTitle.textContent = title;
+
+      const bg = localStorage.getItem('chiayi_bg');
+      if (bg) bgLayer.style.backgroundImage = `url('${bg}')`;
+
+      const bkText = localStorage.getItem('chiayi_btn_booking');
+      if (bkText) btnBooking.textContent = bkText;
+
+      const rmText = localStorage.getItem('chiayi_btn_rooms');
+      if (rmText) btnRooms.textContent = rmText;
+
+      const abText = localStorage.getItem('chiayi_btn_about');
+      if (abText) btnAbout.textContent = abText;
+    }
+
+    // ── Admin mode ──
+    function setAdmin(on) {
+      adminMode = on;
+
+      adminToggle.classList.toggle('active', on);
+      adminBadge.style.display = on ? 'block' : 'none';
+
+      siteTitle.contentEditable = on ? 'true' : 'false';
+      btnBooking.contentEditable = on ? 'true' : 'false';
+      btnRooms.contentEditable   = on ? 'true' : 'false';
+      btnAbout.contentEditable   = on ? 'true' : 'false';
+
+      if (on) {
+        // Remove scroll onclick to allow editing
+        btnBooking.removeAttribute('onclick');
+        btnRooms.removeAttribute('onclick');
+        btnAbout.removeAttribute('onclick');
+
+        // Save on input
+        siteTitle.addEventListener('input', saveTitleHandler);
+        btnBooking.addEventListener('input', saveBtnHandler);
+        btnRooms.addEventListener('input', saveBtnHandler);
+        btnAbout.addEventListener('input', saveBtnHandler);
+
+        uploadArea.classList.add('visible');
+      } else {
+        // Restore scroll onclicks
+        btnBooking.setAttribute('onclick', "scrollTo('#booking')");
+        btnRooms.setAttribute('onclick',   "scrollTo('#rooms')");
+        btnAbout.setAttribute('onclick',   "scrollTo('#about')");
+
+        siteTitle.removeEventListener('input', saveTitleHandler);
+        btnBooking.removeEventListener('input', saveBtnHandler);
+        btnRooms.removeEventListener('input', saveBtnHandler);
+        btnAbout.removeEventListener('input', saveBtnHandler);
+
+        uploadArea.classList.remove('visible');
+      }
+    }
+
+    function saveTitleHandler() {
+      localStorage.setItem('chiayi_title', siteTitle.textContent);
+    }
+
+    function saveBtnHandler(e) {
+      const map = {
+        'btn-booking': 'chiayi_btn_booking',
+        'btn-rooms':   'chiayi_btn_rooms',
+        'btn-about':   'chiayi_btn_about',
+      };
+      const key = map[e.target.id];
+      if (key) localStorage.setItem(key, e.target.textContent);
+    }
+
+    // ── Gear button ──
+    adminToggle.addEventListener('click', () => {
+      if (adminMode) {
+        setAdmin(false);
+      } else {
+        openModal();
+      }
+    });
+
+    // ── PIN modal ──
+    function openModal() {
+      pinInput.value = '';
+      pinError.style.display = 'none';
+      pinModal.classList.add('open');
+      setTimeout(() => pinInput.focus(), 80);
+    }
+
+    function closeModal() {
+      pinModal.classList.remove('open');
+    }
+
+    function confirmPIN() {
+      if (pinInput.value === CORRECT_PIN) {
+        closeModal();
+        setAdmin(true);
+      } else {
+        pinError.style.display = 'block';
+        pinInput.value = '';
+        pinInput.focus();
+      }
+    }
+
+    pinCancel.addEventListener('click', closeModal);
+    pinConfirm.addEventListener('click', confirmPIN);
+
+    pinInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') confirmPIN();
+    });
+
+    // Click outside pin-box closes modal
+    pinModal.addEventListener('click', (e) => {
+      if (e.target === pinModal) closeModal();
+    });
+
+    // ── Background upload ──
+    bgUpload.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const dataURL = ev.target.result;
+        bgLayer.style.backgroundImage = `url('${dataURL}')`;
+        try {
+          localStorage.setItem('chiayi_bg', dataURL);
+        } catch (err) {
+          console.warn('localStorage quota exceeded — image not persisted.');
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // ── Init ──
+    loadSaved();
+  </script>
+</body>
+</html>
