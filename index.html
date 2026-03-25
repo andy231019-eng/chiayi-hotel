@@ -151,6 +151,9 @@
 
     #booking {
       background: #0e0e0e;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: 5rem 1.5rem 4rem;
     }
 
     #rooms {
@@ -167,6 +170,298 @@
       letter-spacing: 0.08em;
       color: rgba(255, 255, 255, 0.15);
     }
+
+    /* ── Booking Section ── */
+    .booking-inner {
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.2rem, 9vw, 3.5rem);
+      letter-spacing: 0.08em;
+      color: #fff;
+      margin-bottom: 1.8rem;
+      text-align: center;
+    }
+
+    /* Calendar */
+    .cal-wrap {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 1.2rem 1rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+    }
+
+    .cal-nav {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.2rem 0.6rem;
+      border-radius: 8px;
+      line-height: 1;
+      transition: background 0.15s;
+    }
+
+    .cal-nav:hover { background: rgba(255, 255, 255, 0.1); }
+
+    .cal-month-label {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #fff;
+    }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 3px;
+    }
+
+    .cal-dow {
+      text-align: center;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.35);
+      padding: 0.25rem 0 0.4rem;
+    }
+
+    .cal-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.82rem;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #fff;
+      transition: background 0.15s;
+      user-select: none;
+      position: relative;
+    }
+
+    .cal-day:hover:not(.disabled):not(.empty) {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .cal-day.empty { cursor: default; }
+
+    .cal-day.disabled {
+      color: rgba(255, 255, 255, 0.2);
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+
+    .cal-day.today {
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .cal-day.checkin {
+      background: #ffd950;
+      color: #111;
+      font-weight: 700;
+      border-radius: 8px 0 0 8px;
+    }
+
+    .cal-day.checkin.solo {
+      border-radius: 8px;
+    }
+
+    .cal-day.checkout {
+      background: rgba(255, 217, 80, 0.35);
+      border-radius: 0 8px 8px 0;
+    }
+
+    .cal-day.in-range {
+      background: rgba(255, 217, 80, 0.12);
+      border-radius: 0;
+    }
+
+    .cal-hint {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.45);
+      text-align: center;
+      margin-top: 0.7rem;
+      min-height: 1.2em;
+    }
+
+    /* Date display chips */
+    .date-display {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .date-chip {
+      flex: 1;
+      padding: 0.65rem 0.9rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+
+    .chip-label {
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.68rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .chip-value {
+      color: #ffd950;
+      font-weight: 500;
+      font-size: 0.88rem;
+    }
+
+    /* Form */
+    .booking-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .form-label .req { color: #ffd950; margin-left: 2px; }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      border-color: rgba(255, 217, 80, 0.55);
+    }
+
+    .form-input.error,
+    .form-textarea.error {
+      border-color: #ff5b5b;
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* time input color fix */
+    input[type="time"]::-webkit-calendar-picker-indicator {
+      filter: invert(1) opacity(0.4);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 88px;
+    }
+
+    .field-error {
+      font-size: 0.75rem;
+      color: #ff5b5b;
+      display: none;
+    }
+
+    .field-error.visible { display: block; }
+
+    /* Submit */
+    .submit-btn {
+      width: 100%;
+      padding: 1rem;
+      background: #ffd950;
+      border: none;
+      border-radius: 50px;
+      color: #111;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      margin-top: 0.4rem;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      opacity: 0.88;
+      transform: translateY(-2px);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    /* Success */
+    .booking-success {
+      display: none;
+      text-align: center;
+      padding: 2.5rem 1rem;
+    }
+
+    .booking-success.visible { display: block; }
+
+    .success-icon {
+      font-size: 3rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .success-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.8rem;
+      letter-spacing: 0.08em;
+      color: #ffd950;
+      margin-bottom: 0.5rem;
+    }
+
+    .success-sub {
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .success-back-btn {
+      margin-top: 1.5rem;
+      padding: 0.7rem 2rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50px;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .success-back-btn:hover { background: rgba(255, 255, 255, 0.16); }
 
     /* ── Admin gear button ── */
     #admin-toggle {
@@ -390,17 +685,85 @@
     </div>
   </section>
 
-  <!-- ── Placeholder sections ── -->
+  <!-- ── Booking Section ── -->
   <section class="section" id="booking">
-    <span class="section-label">BOOKING</span>
+    <div class="booking-inner">
+      <h2 class="section-title">訂房專區</h2>
+
+      <!-- Calendar -->
+      <div class="cal-wrap">
+        <div class="cal-header">
+          <button class="cal-nav" id="cal-prev">&#8249;</button>
+          <span class="cal-month-label" id="cal-month-label"></span>
+          <button class="cal-nav" id="cal-next">&#8250;</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <p class="cal-hint" id="cal-hint">請選擇入住日期</p>
+      </div>
+
+      <!-- Date chips -->
+      <div class="date-display">
+        <div class="date-chip">
+          <div class="chip-label">入住日</div>
+          <div class="chip-value" id="display-checkin">—</div>
+        </div>
+        <div class="date-chip">
+          <div class="chip-label">退房日</div>
+          <div class="chip-value" id="display-checkout">—</div>
+        </div>
+      </div>
+
+      <!-- Success state -->
+      <div class="booking-success" id="booking-success">
+        <div class="success-icon">✓</div>
+        <div class="success-title">訂房成功！</div>
+        <p class="success-sub">我們已收到您的訂房資訊，<br>期待您的到來。</p>
+        <button class="success-back-btn" id="success-back">繼續訂房</button>
+      </div>
+
+      <!-- Form -->
+      <form class="booking-form" id="booking-form" novalidate>
+        <div class="form-field">
+          <label class="form-label" for="f-name">訂房大名<span class="req">*</span></label>
+          <input class="form-input" type="text" id="f-name" placeholder="請輸入姓名" autocomplete="name" />
+          <span class="field-error" id="err-name">請填寫訂房大名</span>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="f-phone">聯絡電話<span class="req">*</span></label>
+          <input class="form-input" type="tel" id="f-phone" inputmode="numeric" placeholder="請輸入電話號碼" autocomplete="tel" />
+          <span class="field-error" id="err-phone">請填寫聯絡電話</span>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="f-email">聯絡 Email<span class="req">*</span></label>
+          <input class="form-input" type="email" id="f-email" placeholder="example@email.com" autocomplete="email" />
+          <span class="field-error" id="err-email">請填寫有效的 Email</span>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="f-arrival">預計抵達時間<span class="req">*</span></label>
+          <input class="form-input" type="time" id="f-arrival" />
+          <span class="field-error" id="err-arrival">請填寫預計抵達時間</span>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="f-note">特殊備注</label>
+          <textarea class="form-textarea" id="f-note" placeholder="如有特殊需求請在此說明（選填）"></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submit-btn" disabled>送出訂房</button>
+      </form>
+    </div>
   </section>
 
+  <!-- ── Placeholder sections ── -->
   <section class="section" id="rooms">
-    <span class="section-label">ROOMS</span>
+    <span class="section-label">客房資訊</span>
   </section>
 
   <section class="section" id="about">
-    <span class="section-label">ABOUT</span>
+    <span class="section-label">關於我們</span>
   </section>
 
   <!-- ── Admin gear button ── -->
@@ -589,6 +952,201 @@
       };
       reader.readAsDataURL(file);
     });
+
+    // ── Booking Calendar ──
+    const BOOKINGS_KEY = 'chiayi_bookings';
+    let calYear, calMonth;
+    let selCheckIn = null;
+    let selCheckOut = null;
+    let selectStep = 'checkin';
+
+    function getBookings() {
+      try { return JSON.parse(localStorage.getItem(BOOKINGS_KEY) || '[]'); }
+      catch { return []; }
+    }
+
+    function getDisabledDates() {
+      const disabled = new Set();
+      getBookings().forEach(b => disabled.add(b.checkIn));
+      return disabled;
+    }
+
+    function fmtDate(y, m, d) {
+      return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    }
+
+    function todayStr() {
+      const t = new Date();
+      return fmtDate(t.getFullYear(), t.getMonth(), t.getDate());
+    }
+
+    function renderCalendar() {
+      const grid = document.getElementById('cal-grid');
+      const label = document.getElementById('cal-month-label');
+      const disabled = getDisabledDates();
+      const today = todayStr();
+      const mNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+      label.textContent = `${calYear} 年 ${mNames[calMonth]}`;
+
+      const dowLabels = ['日','一','二','三','四','五','六'];
+      const firstDow = new Date(calYear, calMonth, 1).getDay();
+      const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+      let html = '';
+      dowLabels.forEach(d => { html += `<div class="cal-dow">${d}</div>`; });
+      for (let i = 0; i < firstDow; i++) html += `<div class="cal-day empty"></div>`;
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const ds = fmtDate(calYear, calMonth, d);
+        const isPast = ds < today;
+        const isDisabled = disabled.has(ds) || isPast;
+
+        let cls = 'cal-day';
+        if (isDisabled) cls += ' disabled';
+        if (ds === today && !isDisabled) cls += ' today';
+        if (ds === selCheckIn) {
+          cls += ' checkin';
+          if (!selCheckOut) cls += ' solo';
+        }
+        if (ds === selCheckOut) cls += ' checkout';
+        if (selCheckIn && selCheckOut && ds > selCheckIn && ds < selCheckOut) cls += ' in-range';
+
+        const attr = isDisabled ? '' : `onclick="calDayClick('${ds}')"`;
+        html += `<div class="${cls}" ${attr}>${d}</div>`;
+      }
+
+      grid.innerHTML = html;
+      updateCalHint();
+      updateDateDisplay();
+      validateBookingForm();
+    }
+
+    function updateCalHint() {
+      const hint = document.getElementById('cal-hint');
+      if (!selCheckIn) {
+        hint.textContent = '請選擇入住日期';
+      } else if (!selCheckOut) {
+        hint.textContent = '已選入住日，請選擇退房日期';
+      } else {
+        const nights = Math.round((new Date(selCheckOut) - new Date(selCheckIn)) / 86400000);
+        hint.textContent = `共 ${nights} 晚`;
+      }
+    }
+
+    function updateDateDisplay() {
+      const fmt = ds => ds ? ds.replace(/-/g, '/') : '—';
+      document.getElementById('display-checkin').textContent = fmt(selCheckIn);
+      document.getElementById('display-checkout').textContent = fmt(selCheckOut);
+    }
+
+    function calDayClick(ds) {
+      if (selectStep === 'checkin') {
+        selCheckIn = ds;
+        selCheckOut = null;
+        selectStep = 'checkout';
+      } else {
+        if (ds <= selCheckIn) {
+          selCheckIn = ds;
+          selCheckOut = null;
+          selectStep = 'checkout';
+        } else {
+          const disabled = getDisabledDates();
+          let conflict = false;
+          const cur = new Date(selCheckIn);
+          const end = new Date(ds);
+          cur.setDate(cur.getDate() + 1);
+          while (cur < end) {
+            if (disabled.has(cur.toISOString().slice(0, 10))) { conflict = true; break; }
+            cur.setDate(cur.getDate() + 1);
+          }
+          if (conflict) {
+            selCheckIn = ds;
+            selCheckOut = null;
+            selectStep = 'checkout';
+          } else {
+            selCheckOut = ds;
+            selectStep = 'checkin';
+          }
+        }
+      }
+      renderCalendar();
+    }
+
+    document.getElementById('cal-prev').addEventListener('click', () => {
+      calMonth--;
+      if (calMonth < 0) { calMonth = 11; calYear--; }
+      renderCalendar();
+    });
+
+    document.getElementById('cal-next').addEventListener('click', () => {
+      calMonth++;
+      if (calMonth > 11) { calMonth = 0; calYear++; }
+      renderCalendar();
+    });
+
+    function validateBookingForm() {
+      const name    = document.getElementById('f-name').value.trim();
+      const phone   = document.getElementById('f-phone').value.trim();
+      const email   = document.getElementById('f-email').value.trim();
+      const arrival = document.getElementById('f-arrival').value;
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      document.getElementById('submit-btn').disabled =
+        !(name && phone && email && emailOk && arrival && selCheckIn && selCheckOut);
+    }
+
+    ['f-name', 'f-phone', 'f-email', 'f-arrival'].forEach(id => {
+      document.getElementById(id).addEventListener('input', validateBookingForm);
+    });
+
+    document.getElementById('booking-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const name    = document.getElementById('f-name').value.trim();
+      const phone   = document.getElementById('f-phone').value.trim();
+      const email   = document.getElementById('f-email').value.trim();
+      const arrival = document.getElementById('f-arrival').value;
+      const note    = document.getElementById('f-note').value.trim();
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+      let hasError = false;
+      const check = (val, errId, inputId) => {
+        const ok = typeof val === 'boolean' ? val : !!val;
+        document.getElementById(errId).classList.toggle('visible', !ok);
+        document.getElementById(inputId).classList.toggle('error', !ok);
+        if (!ok) hasError = true;
+      };
+      check(name,    'err-name',    'f-name');
+      check(phone,   'err-phone',   'f-phone');
+      check(email && emailOk, 'err-email', 'f-email');
+      check(arrival, 'err-arrival', 'f-arrival');
+
+      if (hasError || !selCheckIn || !selCheckOut) return;
+
+      const bookings = getBookings();
+      bookings.push({ checkIn: selCheckIn, checkOut: selCheckOut, name, phone, email, arrivalTime: arrival, note, createdAt: new Date().toISOString() });
+      localStorage.setItem(BOOKINGS_KEY, JSON.stringify(bookings));
+
+      selCheckIn = null;
+      selCheckOut = null;
+      selectStep = 'checkin';
+      document.getElementById('booking-form').reset();
+      renderCalendar();
+
+      document.getElementById('booking-form').style.display = 'none';
+      document.getElementById('booking-success').classList.add('visible');
+    });
+
+    document.getElementById('success-back').addEventListener('click', () => {
+      document.getElementById('booking-success').classList.remove('visible');
+      document.getElementById('booking-form').style.display = 'flex';
+      validateBookingForm();
+    });
+
+    // Init calendar
+    const _now = new Date();
+    calYear = _now.getFullYear();
+    calMonth = _now.getMonth();
+    renderCalendar();
 
     // ── Init ──
     loadSaved();
