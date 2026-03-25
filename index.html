@@ -39,17 +39,22 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       overflow: hidden;
     }
 
     #bg-layer {
       position: absolute;
       inset: 0;
-      background-image: url('https://images.unsplash.com/photo-1598228723793-52759bba239c?w=1200&q=80');
+      background-image: url('cellphoneBGD.png');
       background-size: cover;
       background-position: center;
       z-index: 0;
+    }
+
+    @media (min-width: 768px) {
+      #bg-layer {
+        background-image: url('computerBGD.png');
+      }
     }
 
     #bg-layer::after {
@@ -70,10 +75,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0 1.5rem;
+      justify-content: space-between;
+      padding: 2.5rem 1.5rem 4rem;
       width: 100%;
       max-width: 360px;
+      height: 100%;
     }
 
     #site-title {
@@ -93,16 +99,6 @@
       border-radius: 8px;
       padding: 0.2em 0.4em;
       cursor: text;
-    }
-
-    .hero-subtitle {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 300;
-      font-size: clamp(0.7rem, 3vw, 0.9rem);
-      color: rgba(255, 255, 255, 0.75);
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      margin-bottom: 2rem;
     }
 
     .btn-group {
@@ -385,8 +381,7 @@
     </div>
 
     <div id="hero-content">
-      <h1 id="site-title" spellcheck="false">HOTEL</h1>
-      <p class="hero-subtitle">Boutique Hotel</p>
+      <h1 id="site-title" spellcheck="false">CHIAYI</h1>
       <div class="btn-group">
         <button class="glass-btn" id="btn-booking" onclick="scrollTo('#booking')">Booking Now</button>
         <button class="glass-btn" id="btn-rooms"   onclick="scrollTo('#rooms')">Room Info</button>
