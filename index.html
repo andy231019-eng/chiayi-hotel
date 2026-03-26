@@ -1606,18 +1606,22 @@
     });
 
     // ── Firebase ──
-    firebase.initializeApp({
-      apiKey: "AIzaSyC505oMS46VbNl3zZxiawHPFDx4PNSoDms",
-      authDomain: "chiayi-hotel.firebaseapp.com",
-      projectId: "chiayi-hotel",
-      storageBucket: "chiayi-hotel.firebasestorage.app",
-      messagingSenderId: "810331108116",
-      appId: "1:810331108116:web:dac7561e32379792568801"
-    });
+    if (!firebase.apps.length) {
+      firebase.initializeApp({
+        apiKey: "AIzaSyC505oMS46VbNl3zZxiawHPFDx4PNSoDms",
+        authDomain: "chiayi-hotel.firebaseapp.com",
+        projectId: "chiayi-hotel",
+        storageBucket: "chiayi-hotel.firebasestorage.app",
+        messagingSenderId: "810331108116",
+        appId: "1:810331108116:web:dac7561e32379792568801"
+      });
+    }
     const db = firebase.firestore();
 
     // ── Booking Calendar ──
-    let calYear, calMonth;
+    const _initNow = new Date();
+    let calYear  = _initNow.getFullYear();
+    let calMonth = _initNow.getMonth();
     let selCheckIn = null;
     let selCheckOut = null;
     let selectStep = 'checkin';
@@ -1815,11 +1819,21 @@
       submitBtn.disabled = true;
       submitBtn.textContent = '送出中…';
 
+      // Snapshot these before clearing so we can restore on error
+      const savedCheckIn  = selCheckIn;
+      const savedCheckOut = selCheckOut;
+
+      // Clear selection NOW — before the await — so onSnapshot can't re-enable
+      // the submit button mid-flight via validateBookingForm inside renderCalendar
+      selCheckIn  = null;
+      selCheckOut = null;
+      selectStep  = 'checkin';
+
       try {
         await db.collection('bookings').add({
           guest_name:   name,
-          check_in:     selCheckIn,
-          check_out:    selCheckOut,
+          check_in:     savedCheckIn,
+          check_out:    savedCheckOut,
           guests:       guests,
           phone:        phone,
           email:        email,
@@ -1829,9 +1843,6 @@
           created_at:   firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        selCheckIn = null;
-        selCheckOut = null;
-        selectStep = 'checkin';
         document.getElementById('booking-form').reset();
         renderCalendar();
         submitBtn.textContent = '送出訂房';
@@ -1840,6 +1851,11 @@
         document.getElementById('booking-success').classList.add('visible');
       } catch (err) {
         console.error('Booking failed:', err);
+        // Restore dates so the user can try again
+        selCheckIn  = savedCheckIn;
+        selCheckOut = savedCheckOut;
+        selectStep  = 'checkin';
+        renderCalendar();
         submitBtn.textContent = '送出失敗，請重試';
         submitBtn.disabled = false;
         setTimeout(() => {
@@ -1988,13 +2004,8 @@
       }
     });
 
-    // Init calendar
-    const _now = new Date();
-    calYear = _now.getFullYear();
-    calMonth = _now.getMonth();
-    renderCalendar();
-
     // ── Init ──
+    renderCalendar();
     loadSaved();
   </script>
 </body>
