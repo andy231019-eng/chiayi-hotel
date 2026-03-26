@@ -1853,6 +1853,7 @@
         document.getElementById('booking-success').classList.add('visible');
 
         // Send confirmation email — non-blocking
+        console.log('About to send email to:', email);
         emailjs.send("service_slc55q4", "template_nd4tm7a", {
           to_email:     email,
           guest_name:   name,
@@ -1861,6 +1862,7 @@
           guests:       guests,
           arrival_time: arrival
         }).catch(err => console.error('EmailJS send failed:', err));
+        console.log('emailjs.send() called');
       } catch (err) {
         console.error('Booking failed:', err);
         // Restore dates so the user can try again
