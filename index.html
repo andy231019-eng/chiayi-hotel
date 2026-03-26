@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <style>
     :root {
       --glass-bg: rgba(255, 255, 255, 0.12);
@@ -983,6 +985,176 @@
       background: #5C8F7B;
       transform: translateY(-1px);
     }
+
+    /* ── Admin Panel Button ── */
+    #admin-panel-btn {
+      position: fixed;
+      bottom: 5.4rem;
+      right: 1.8rem;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(20, 20, 20, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #fff;
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 900;
+      transition: background 0.2s;
+    }
+
+    #admin-panel-btn.visible { display: flex; }
+    #admin-panel-btn:hover { background: rgba(50, 50, 50, 0.9); }
+
+    /* ── Admin Panel Overlay ── */
+    #admin-panel-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1050;
+      display: none;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    #admin-panel-overlay.open { display: block; }
+
+    #admin-panel {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: min(420px, 100vw);
+      height: 100%;
+      background: #141414;
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .ap-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 1.5rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+
+    .ap-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 0.08em;
+      color: #6FA28E;
+    }
+
+    #ap-close {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+
+    #ap-close:hover { background: rgba(255, 255, 255, 0.16); }
+
+    #ap-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 1.2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .ap-empty {
+      text-align: center;
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 0.9rem;
+      padding: 3rem 0;
+    }
+
+    .ap-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .ap-card.cancelled { opacity: 0.45; }
+
+    .ap-card-name {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .ap-card.cancelled .ap-card-name { text-decoration: line-through; }
+
+    .ap-card-dates {
+      font-size: 0.85rem;
+      color: #6FA28E;
+      font-weight: 500;
+    }
+
+    .ap-card-row {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.5;
+    }
+
+    .ap-card-status {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.2rem 0.65rem;
+      border-radius: 20px;
+      align-self: flex-start;
+      margin-top: 0.1rem;
+    }
+
+    .ap-card-status.pending   { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.55); }
+    .ap-card-status.confirmed { background: rgba(111,162,142,0.2); color: #6FA28E; }
+    .ap-card-status.cancelled { background: rgba(255,91,91,0.12); color: #ff5b5b; }
+
+    .ap-card-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+    }
+
+    .ap-action-btn {
+      flex: 1;
+      padding: 0.5rem 0.4rem;
+      border-radius: 8px;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .ap-action-btn:hover { opacity: 0.75; }
+    .ap-confirm-btn { background: rgba(111,162,142,0.18); color: #6FA28E; border: 1px solid rgba(111,162,142,0.3); }
+    .ap-cancel-btn  { background: rgba(255,91,91,0.1); color: #ff5b5b; border: 1px solid rgba(255,91,91,0.25); }
   </style>
 </head>
 <body>
@@ -1208,6 +1380,20 @@
     </div>
   </div>
 
+  <!-- ── Admin Panel Button ── -->
+  <button id="admin-panel-btn" aria-label="訂房清單">📋</button>
+
+  <!-- ── Admin Panel Overlay ── -->
+  <div id="admin-panel-overlay">
+    <div id="admin-panel">
+      <div class="ap-header">
+        <h2 class="ap-title">訂房清單</h2>
+        <button id="ap-close">✕</button>
+      </div>
+      <div id="ap-list"></div>
+    </div>
+  </div>
+
   <!-- ── Admin gear button ── -->
   <button id="admin-toggle" aria-label="Admin">
     <span class="gear-icon">⚙</span>
@@ -1324,6 +1510,7 @@
         btnAbout.addEventListener('input', saveBtnHandler);
 
         uploadArea.classList.add('visible');
+      document.getElementById('admin-panel-btn').classList.add('visible');
       } else {
         // Restore nav onclicks
         btnBooking.setAttribute('onclick', "showSection('booking')");
@@ -1336,6 +1523,9 @@
         btnAbout.removeEventListener('input', saveBtnHandler);
 
         uploadArea.classList.remove('visible');
+        document.getElementById('admin-panel-btn').classList.remove('visible');
+        document.getElementById('admin-panel-overlay').classList.remove('open');
+        adminPanelOpen = false;
       }
       renderCalendar();
     }
@@ -1415,23 +1605,47 @@
       reader.readAsDataURL(file);
     });
 
+    // ── Firebase ──
+    firebase.initializeApp({
+      apiKey: "AIzaSyC505oMS46VbNl3zZxiawHPFDx4PNSoDms",
+      authDomain: "chiayi-hotel.firebaseapp.com",
+      projectId: "chiayi-hotel",
+      storageBucket: "chiayi-hotel.firebasestorage.app",
+      messagingSenderId: "810331108116",
+      appId: "1:810331108116:web:dac7561e32379792568801"
+    });
+    const db = firebase.firestore();
+
     // ── Booking Calendar ──
-    const BOOKINGS_KEY = 'chiayi_bookings';
     let calYear, calMonth;
     let selCheckIn = null;
     let selCheckOut = null;
     let selectStep = 'checkin';
+    let bookingsCache = [];
+    let bookedDatesCache = new Set();
+    let adminPanelOpen = false;
 
-    function getBookings() {
-      try { return JSON.parse(localStorage.getItem(BOOKINGS_KEY) || '[]'); }
-      catch { return []; }
+    function buildBlockedDates(bookings) {
+      const blocked = new Set();
+      bookings.forEach(b => {
+        if (b.status === 'cancelled') return;
+        if (!b.check_in || !b.check_out) return;
+        const cur = new Date(b.check_in);
+        const end = new Date(b.check_out);
+        while (cur < end) {
+          blocked.add(cur.toISOString().slice(0, 10));
+          cur.setDate(cur.getDate() + 1);
+        }
+      });
+      return blocked;
     }
 
-    function getDisabledDates() {
-      const disabled = new Set();
-      getBookings().forEach(b => disabled.add(b.checkIn));
-      return disabled;
-    }
+    db.collection('bookings').onSnapshot(snapshot => {
+      bookingsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      bookedDatesCache = buildBlockedDates(bookingsCache);
+      renderCalendar();
+      if (adminPanelOpen) renderAdminPanel();
+    }, err => console.error('Firestore error:', err));
 
     function fmtDate(y, m, d) {
       return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -1445,7 +1659,7 @@
     function renderCalendar() {
       const grid = document.getElementById('cal-grid');
       const label = document.getElementById('cal-month-label');
-      const disabled = getDisabledDates();
+      const disabled = bookedDatesCache;
       const today = todayStr();
       const mNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
 
@@ -1522,7 +1736,7 @@
           selCheckOut = null;
           selectStep = 'checkout';
         } else {
-          const disabled = getDisabledDates();
+          const disabled = bookedDatesCache;
           let conflict = false;
           const cur = new Date(selCheckIn);
           const end = new Date(ds);
@@ -1572,7 +1786,7 @@
     });
     document.getElementById('f-guests').addEventListener('change', validateBookingForm);
 
-    document.getElementById('booking-form').addEventListener('submit', e => {
+    document.getElementById('booking-form').addEventListener('submit', async e => {
       e.preventDefault();
       const name    = document.getElementById('f-name').value.trim();
       const guests  = document.getElementById('f-guests').value;
@@ -1597,18 +1811,42 @@
 
       if (hasError || !selCheckIn || !selCheckOut) return;
 
-      const bookings = getBookings();
-      bookings.push({ checkIn: selCheckIn, checkOut: selCheckOut, name, guests, phone, email, arrivalTime: arrival, note, createdAt: new Date().toISOString() });
-      localStorage.setItem(BOOKINGS_KEY, JSON.stringify(bookings));
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '送出中…';
 
-      selCheckIn = null;
-      selCheckOut = null;
-      selectStep = 'checkin';
-      document.getElementById('booking-form').reset();
-      renderCalendar();
+      try {
+        await db.collection('bookings').add({
+          guest_name:   name,
+          check_in:     selCheckIn,
+          check_out:    selCheckOut,
+          guests:       guests,
+          phone:        phone,
+          email:        email,
+          arrival_time: arrival,
+          notes:        note,
+          status:       'pending',
+          created_at:   firebase.firestore.FieldValue.serverTimestamp()
+        });
 
-      document.getElementById('booking-form').style.display = 'none';
-      document.getElementById('booking-success').classList.add('visible');
+        selCheckIn = null;
+        selCheckOut = null;
+        selectStep = 'checkin';
+        document.getElementById('booking-form').reset();
+        renderCalendar();
+        submitBtn.textContent = '送出訂房';
+
+        document.getElementById('booking-form').style.display = 'none';
+        document.getElementById('booking-success').classList.add('visible');
+      } catch (err) {
+        console.error('Booking failed:', err);
+        submitBtn.textContent = '送出失敗，請重試';
+        submitBtn.disabled = false;
+        setTimeout(() => {
+          submitBtn.textContent = '送出訂房';
+          validateBookingForm();
+        }, 3000);
+      }
     });
 
     document.getElementById('success-back').addEventListener('click', () => {
@@ -1618,30 +1856,33 @@
     });
 
     // ── Booking Detail Modal (Admin) ──
-    let editingCheckIn = null;
+    let editingBookingId = null;
 
     function adminCalDayClick(ds) {
-      const booking = getBookings().find(b => b.checkIn === ds);
+      // find the booking whose range covers this date
+      const booking = bookingsCache.find(b =>
+        b.status !== 'cancelled' && b.check_in <= ds && b.check_out > ds
+      );
       if (!booking) return;
       openBookingDetail(booking);
     }
 
     function openBookingDetail(booking) {
-      editingCheckIn = booking.checkIn;
-      document.getElementById('bd-checkin-display').textContent = booking.checkIn.replace(/-/g, '/');
-      document.getElementById('bd-checkout').value  = booking.checkOut    || '';
-      document.getElementById('bd-name').value      = booking.name        || '';
-      document.getElementById('bd-guests').value   = booking.guests      || '';
-      document.getElementById('bd-phone').value     = booking.phone       || '';
-      document.getElementById('bd-email').value     = booking.email       || '';
-      document.getElementById('bd-arrival').value   = booking.arrivalTime || '';
-      document.getElementById('bd-note').value      = booking.note        || '';
+      editingBookingId = booking.id;
+      document.getElementById('bd-checkin-display').textContent = (booking.check_in || '').replace(/-/g, '/');
+      document.getElementById('bd-checkout').value  = booking.check_out    || '';
+      document.getElementById('bd-name').value      = booking.guest_name   || '';
+      document.getElementById('bd-guests').value    = booking.guests       || '';
+      document.getElementById('bd-phone').value     = booking.phone        || '';
+      document.getElementById('bd-email').value     = booking.email        || '';
+      document.getElementById('bd-arrival').value   = booking.arrival_time || '';
+      document.getElementById('bd-note').value      = booking.notes        || '';
       document.getElementById('booking-detail-overlay').classList.add('open');
     }
 
     function closeBookingDetail() {
       document.getElementById('booking-detail-overlay').classList.remove('open');
-      editingCheckIn = null;
+      editingBookingId = null;
     }
 
     document.getElementById('bd-close').addEventListener('click', closeBookingDetail);
@@ -1650,24 +1891,20 @@
       if (e.target === document.getElementById('booking-detail-overlay')) closeBookingDetail();
     });
 
-    document.getElementById('bd-save').addEventListener('click', () => {
-      if (!editingCheckIn) return;
-      const bookings = getBookings();
-      const idx = bookings.findIndex(b => b.checkIn === editingCheckIn);
-      if (idx === -1) return;
-      bookings[idx] = {
-        ...bookings[idx],
-        checkOut:    document.getElementById('bd-checkout').value,
-        name:        document.getElementById('bd-name').value.trim(),
-        guests:      document.getElementById('bd-guests').value,
-        phone:       document.getElementById('bd-phone').value.trim(),
-        email:       document.getElementById('bd-email').value.trim(),
-        arrivalTime: document.getElementById('bd-arrival').value,
-        note:        document.getElementById('bd-note').value.trim(),
-      };
-      localStorage.setItem(BOOKINGS_KEY, JSON.stringify(bookings));
-      closeBookingDetail();
-      renderCalendar();
+    document.getElementById('bd-save').addEventListener('click', async () => {
+      if (!editingBookingId) return;
+      try {
+        await db.collection('bookings').doc(editingBookingId).update({
+          check_out:    document.getElementById('bd-checkout').value,
+          guest_name:   document.getElementById('bd-name').value.trim(),
+          guests:       document.getElementById('bd-guests').value,
+          phone:        document.getElementById('bd-phone').value.trim(),
+          email:        document.getElementById('bd-email').value.trim(),
+          arrival_time: document.getElementById('bd-arrival').value,
+          notes:        document.getElementById('bd-note').value.trim(),
+        });
+        closeBookingDetail();
+      } catch (err) { console.error('Save failed:', err); }
     });
 
     document.getElementById('bd-delete').addEventListener('click', () => {
@@ -1684,13 +1921,71 @@
       }
     });
 
-    document.getElementById('delete-confirm-btn').addEventListener('click', () => {
-      if (!editingCheckIn) return;
-      const bookings = getBookings().filter(b => b.checkIn !== editingCheckIn);
-      localStorage.setItem(BOOKINGS_KEY, JSON.stringify(bookings));
-      document.getElementById('delete-confirm-overlay').classList.remove('open');
-      closeBookingDetail();
-      renderCalendar();
+    document.getElementById('delete-confirm-btn').addEventListener('click', async () => {
+      if (!editingBookingId) return;
+      try {
+        await db.collection('bookings').doc(editingBookingId).delete();
+        document.getElementById('delete-confirm-overlay').classList.remove('open');
+        closeBookingDetail();
+      } catch (err) { console.error('Delete failed:', err); }
+    });
+
+    // ── Admin Panel ──
+    function escHtml(s) {
+      return String(s)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+    }
+
+    function renderAdminPanel() {
+      const list = document.getElementById('ap-list');
+      if (!bookingsCache.length) {
+        list.innerHTML = '<div class="ap-empty">目前無訂房記錄</div>';
+        return;
+      }
+      const sorted = [...bookingsCache].sort((a, b) => (a.check_in || '').localeCompare(b.check_in || ''));
+      const statusLabel = { pending: '待確認', confirmed: '已確認', cancelled: '已取消' };
+      list.innerHTML = sorted.map(b => `
+        <div class="ap-card ${b.status === 'cancelled' ? 'cancelled' : ''}">
+          <div class="ap-card-name">${escHtml(b.guest_name || '—')}</div>
+          <div class="ap-card-dates">${escHtml(b.check_in || '')} → ${escHtml(b.check_out || '')}</div>
+          <div class="ap-card-row">人數：${escHtml(b.guests || '—')} 位　電話：${escHtml(b.phone || '—')}</div>
+          <div class="ap-card-row">Email：${escHtml(b.email || '—')}</div>
+          <div class="ap-card-row">抵達：${escHtml(b.arrival_time || '—')}　備註：${escHtml(b.notes || '無')}</div>
+          <span class="ap-card-status ${escHtml(b.status || '')}">${escHtml(statusLabel[b.status] || b.status || '')}</span>
+          ${b.status !== 'cancelled' ? `
+          <div class="ap-card-actions">
+            ${b.status !== 'confirmed' ? `<button class="ap-action-btn ap-confirm-btn" onclick="updateBookingStatus('${b.id}','confirmed')">✅ 確認</button>` : ''}
+            <button class="ap-action-btn ap-cancel-btn" onclick="updateBookingStatus('${b.id}','cancelled')">❌ 取消</button>
+          </div>` : ''}
+        </div>
+      `).join('');
+    }
+
+    async function updateBookingStatus(id, status) {
+      try {
+        await db.collection('bookings').doc(id).update({ status });
+      } catch (err) { console.error('Status update failed:', err); }
+    }
+
+    document.getElementById('admin-panel-btn').addEventListener('click', () => {
+      adminPanelOpen = true;
+      renderAdminPanel();
+      document.getElementById('admin-panel-overlay').classList.add('open');
+    });
+
+    document.getElementById('ap-close').addEventListener('click', () => {
+      document.getElementById('admin-panel-overlay').classList.remove('open');
+      adminPanelOpen = false;
+    });
+
+    document.getElementById('admin-panel-overlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('admin-panel-overlay')) {
+        document.getElementById('admin-panel-overlay').classList.remove('open');
+        adminPanelOpen = false;
+      }
     });
 
     // Init calendar
