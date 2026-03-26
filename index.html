@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet" />
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     :root {
       --glass-bg: rgba(255, 255, 255, 0.12);
@@ -1617,6 +1618,7 @@
       });
     }
     const db = firebase.firestore();
+    emailjs.init("njuXhIOqJDdtYGZ2j");
 
     // ── Booking Calendar ──
     const _initNow = new Date();
@@ -1849,6 +1851,16 @@
 
         document.getElementById('booking-form').style.display = 'none';
         document.getElementById('booking-success').classList.add('visible');
+
+        // Send confirmation email — non-blocking
+        emailjs.send("service_c18m8xw", "template_nd4tm7a", {
+          to_email:     email,
+          guest_name:   name,
+          check_in:     savedCheckIn,
+          check_out:    savedCheckOut,
+          guests:       guests,
+          arrival_time: arrival
+        }).catch(err => console.error('EmailJS send failed:', err));
       } catch (err) {
         console.error('Booking failed:', err);
         // Restore dates so the user can try again
