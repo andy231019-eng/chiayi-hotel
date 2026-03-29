@@ -2898,7 +2898,7 @@
     function renderCategoryTabs() {
       const tabs = ['全部', ...categoriesCache.map(c => c.name)];
       tabsContainer.innerHTML = tabs.map(c =>
-        `<button class="foods-tab ${c === currentCategory ? 'active' : ''}" onclick="selectCategory(${JSON.stringify(c)})">${escHtml(c)}</button>`
+        `<button class="foods-tab ${c === currentCategory ? 'active' : ''}" onclick="selectCategory('${escHtml(c)}')">${escHtml(c)}</button>`
       ).join('');
     }
 
