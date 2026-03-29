@@ -592,13 +592,15 @@
       cursor: pointer;
       transition: background 0.2s;
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
 
     .food-card:hover, .food-card:active { background: rgba(34, 120, 70, 0.3); }
 
-    .food-card-img {
+    .food-card img {
       width: 100%;
-      height: 160px;
+      height: 180px;
       object-fit: cover;
       display: block;
     }
@@ -613,22 +615,24 @@
       font-size: 2rem;
     }
 
-    .food-card-body {
-      padding: 0.9rem 1rem;
+    .food-info {
+      padding: 14px 16px;
+      background: rgba(0, 0, 0, 0.15);
+      position: relative;
     }
 
-    .food-card-name {
+    .food-title {
       font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
-      font-size: 1.05rem;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: 600;
       color: #fff;
-      margin-bottom: 0.3rem;
+      margin-bottom: 4px;
     }
 
-    .food-card-comment {
+    .food-comment {
       font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
-      font-size: 0.88rem;
-      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.9);
       line-height: 1.5;
     }
 
@@ -2966,13 +2970,13 @@
         };
 
         card.innerHTML = f.image
-          ? `<img class="food-card-img" src="${escHtml(f.image)}" alt="${escHtml(f.name)}" loading="lazy" />`
+          ? `<img src="${escHtml(f.image)}" alt="${escHtml(f.name)}" loading="lazy" />`
           : `<div class="food-card-img-placeholder">🍽</div>`;
 
         const body = document.createElement('div');
-        body.className = 'food-card-body';
-        body.innerHTML = `<div class="food-card-name">${escHtml(f.name || '')}</div>
-          ${f.comment ? `<div class="food-card-comment">${escHtml(f.comment)}</div>` : ''}`;
+        body.className = 'food-info';
+        body.innerHTML = `<div class="food-title">${escHtml(f.name || '')}</div>
+          ${f.comment ? `<div class="food-comment">${escHtml(f.comment)}</div>` : ''}`;
         card.appendChild(body);
 
         const adminBtns = document.createElement('div');
