@@ -480,22 +480,48 @@
       text-align: center;
     }
 
-    .foods-add-btn {
-      background: rgba(58, 158, 98, 0.4);
-      border: 1px solid rgba(58, 158, 98, 0.6);
+    .foods-admin-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 10;
+      background: rgba(111, 162, 142, 0.25);
+      border: 1px solid rgba(111, 162, 142, 0.5);
       border-radius: 20px;
-      color: #fff;
+      color: rgba(255, 255, 255, 0.75);
       font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
-      font-size: 0.78rem;
-      padding: 0.35rem 0.8rem;
-      cursor: pointer;
-      min-height: 44px;
+      font-size: 0.72rem;
+      padding: 0.25rem 0.7rem;
       display: none;
       align-items: center;
-      transition: background 0.2s;
+      pointer-events: none;
     }
 
-    .foods-add-btn:hover { background: rgba(58, 158, 98, 0.65); }
+    .foods-admin-badge.visible { display: flex; }
+
+    .foods-add-btn {
+      position: fixed;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+      right: 20px;
+      z-index: 20;
+      background: rgba(58, 158, 98, 0.85);
+      border: none;
+      border-radius: 50px;
+      color: #fff;
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 1rem;
+      font-weight: 600;
+      width: 52px;
+      height: 52px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .foods-add-btn:hover { background: rgba(58, 158, 98, 1); transform: scale(1.08); }
     .foods-add-btn.visible { display: flex; }
 
     .foods-form {
@@ -1766,8 +1792,9 @@
     <div class="foods-header">
       <button class="pk-back" onclick="showSection('rooms')">&#8592; 返回</button>
       <span class="foods-title">附近好吃的</span>
-      <button class="foods-add-btn" id="foods-add-btn" onclick="foodsToggleForm()">＋ 新增店家</button>
     </div>
+    <span class="foods-admin-badge" id="foods-admin-badge">管理模式</span>
+    <button class="foods-add-btn" id="foods-add-btn" onclick="foodsToggleForm()">＋</button>
 
     <div class="foods-form" id="foods-form">
       <input class="foods-form-input" id="food-name" type="text" placeholder="店名" />
@@ -1954,13 +1981,23 @@
     });
 
     // ── Section switching ──
+    let currentSection = 'hero';
+
     function showSection(id) {
+      currentSection = id;
       document.querySelectorAll('.page-section').forEach(s => {
         s.classList.remove('active-section');
       });
       const target = document.getElementById(id);
       if (target) target.classList.add('active-section');
-      adminToggle.style.display = (id === 'packing') ? 'none' : '';
+
+      // Hide gear on pages with their own admin controls
+      adminToggle.style.display = (id === 'packing' || id === 'foods') ? 'none' : '';
+
+      // Foods-specific admin UI
+      const onFoods = id === 'foods';
+      document.getElementById('foods-admin-badge').classList.toggle('visible', onFoods && adminMode);
+      document.getElementById('foods-add-btn').classList.toggle('visible', onFoods && adminMode);
     }
 
     // ── Load saved values ──
@@ -2007,12 +2044,14 @@
 
         uploadArea.classList.add('visible');
         document.getElementById('admin-panel-btn').classList.add('visible');
-        document.getElementById('foods-add-btn').classList.add('visible');
+        document.getElementById('foods-admin-badge').classList.toggle('visible', currentSection === 'foods');
+        document.getElementById('foods-add-btn').classList.toggle('visible', currentSection === 'foods');
       } else {
         // Restore nav onclicks
         btnBooking.setAttribute('onclick', "showSection('booking')");
         btnRooms.setAttribute('onclick',   "showSection('rooms')");
         btnAbout.setAttribute('onclick',   "showComingSoonModal()");
+        document.getElementById('foods-admin-badge').classList.remove('visible');
         document.getElementById('foods-add-btn').classList.remove('visible');
         document.getElementById('foods-form').classList.remove('open');
 
