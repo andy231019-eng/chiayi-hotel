@@ -453,6 +453,180 @@
 
     .pk-add-btn:hover { background: rgba(58, 158, 98, 0.65); }
 
+    /* ── Foods Page ── */
+    #foods {
+      background: #0a1c14;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .foods-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: calc(env(safe-area-inset-top, 0px) + 1rem) 1.2rem 0.8rem;
+      background: #0a1c14;
+      gap: 0.5rem;
+    }
+
+    .foods-title {
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      flex: 1;
+      text-align: center;
+    }
+
+    .foods-add-btn {
+      background: rgba(58, 158, 98, 0.4);
+      border: 1px solid rgba(58, 158, 98, 0.6);
+      border-radius: 20px;
+      color: #fff;
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.8rem;
+      cursor: pointer;
+      min-height: 44px;
+      display: none;
+      align-items: center;
+      transition: background 0.2s;
+    }
+
+    .foods-add-btn:hover { background: rgba(58, 158, 98, 0.65); }
+    .foods-add-btn.visible { display: flex; }
+
+    .foods-form {
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.8rem 1.2rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .foods-form.open { display: flex; }
+
+    .foods-form-input {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: #fff;
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.9rem;
+      padding: 0.55rem 0.9rem;
+      outline: none;
+      min-height: 44px;
+      resize: none;
+    }
+
+    .foods-form-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+    .foods-form-input:focus { border-color: rgba(255, 255, 255, 0.4); }
+
+    .foods-form-submit {
+      background: rgba(58, 158, 98, 0.5);
+      border: 1px solid rgba(58, 158, 98, 0.7);
+      border-radius: 10px;
+      color: #fff;
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.65rem;
+      cursor: pointer;
+      min-height: 44px;
+      transition: background 0.2s;
+    }
+
+    .foods-form-submit:hover { background: rgba(58, 158, 98, 0.75); }
+
+    .foods-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 1rem 1.2rem calc(env(safe-area-inset-bottom, 0px) + 1rem);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .food-card {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: background 0.2s;
+      position: relative;
+    }
+
+    .food-card:hover, .food-card:active { background: rgba(34, 120, 70, 0.3); }
+
+    .food-card-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .food-card-img-placeholder {
+      width: 100%;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .food-card-body {
+      padding: 0.9rem 1rem;
+    }
+
+    .food-card-name {
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+
+    .food-card-comment {
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.6);
+      line-height: 1.5;
+    }
+
+    .food-delete-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: rgba(180, 40, 40, 0.8);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      cursor: pointer;
+      min-height: 32px;
+      display: none;
+      align-items: center;
+    }
+
+    .food-delete-btn.visible { display: flex; }
+
+    .foods-empty {
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.3);
+      text-align: center;
+      padding: 3rem 0;
+    }
+
     #about {
       background: #0e0e0e;
       display: flex;
@@ -1545,7 +1719,7 @@
       </div>
 
       <!-- 附近好吃的 -->
-      <div class="ri-card">
+      <div class="ri-card" onclick="showSection('foods')">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M18 8h1a4 4 0 0 1 0 8h-1"/>
           <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/>
@@ -1584,6 +1758,27 @@
         <input class="pk-add-input" id="pk-add-input" type="text" placeholder="新增自訂項目" />
         <button class="pk-add-btn" onclick="packingAddCustom()">＋ 新增</button>
       </div>
+    </div>
+  </section>
+
+  <!-- ── Foods Page ── -->
+  <section class="page-section" id="foods">
+    <div class="foods-header">
+      <button class="pk-back" onclick="showSection('rooms')">&#8592; 返回</button>
+      <span class="foods-title">附近好吃的</span>
+      <button class="foods-add-btn" id="foods-add-btn" onclick="foodsToggleForm()">＋ 新增店家</button>
+    </div>
+
+    <div class="foods-form" id="foods-form">
+      <input class="foods-form-input" id="food-name" type="text" placeholder="店名" />
+      <input class="foods-form-input" id="food-map" type="url" placeholder="Google Maps URL" />
+      <input class="foods-form-input" id="food-img" type="url" placeholder="圖片 URL（選填）" />
+      <textarea class="foods-form-input" id="food-comment" placeholder="主人評論" rows="2"></textarea>
+      <button class="foods-form-submit" onclick="foodsAddItem()">送出</button>
+    </div>
+
+    <div class="foods-scroll" id="foods-list">
+      <div class="foods-empty">載入中…</div>
     </div>
   </section>
 
@@ -1813,12 +2008,15 @@
         btnAbout.addEventListener('input', saveBtnHandler);
 
         uploadArea.classList.add('visible');
-      document.getElementById('admin-panel-btn').classList.add('visible');
+        document.getElementById('admin-panel-btn').classList.add('visible');
+        document.getElementById('foods-add-btn').classList.add('visible');
       } else {
         // Restore nav onclicks
         btnBooking.setAttribute('onclick', "showSection('booking')");
-        btnRooms.setAttribute('onclick',   "showComingSoonModal()");
+        btnRooms.setAttribute('onclick',   "showSection('rooms')");
         btnAbout.setAttribute('onclick',   "showComingSoonModal()");
+        document.getElementById('foods-add-btn').classList.remove('visible');
+        document.getElementById('foods-form').classList.remove('open');
 
         siteTitle.removeEventListener('input', saveTitleHandler);
         btnBooking.removeEventListener('input', saveBtnHandler);
@@ -2325,6 +2523,61 @@
         adminPanelOpen = false;
       }
     });
+
+    // ── Foods ──
+    function renderFoods(snapshot) {
+      const foods = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const list = document.getElementById('foods-list');
+      if (!list) return;
+      if (!foods.length) {
+        list.innerHTML = '<div class="foods-empty">還沒有推薦店家</div>';
+        return;
+      }
+      list.innerHTML = foods.map(f => `
+        <div class="food-card" onclick="if(event.target.closest('.food-delete-btn'))return;window.open(${JSON.stringify(f.mapUrl || '')}, '_blank')">
+          ${f.image
+            ? `<img class="food-card-img" src="${escHtml(f.image)}" alt="${escHtml(f.name)}" loading="lazy" />`
+            : `<div class="food-card-img-placeholder">🍽</div>`}
+          <div class="food-card-body">
+            <div class="food-card-name">${escHtml(f.name || '')}</div>
+            ${f.comment ? `<div class="food-card-comment">${escHtml(f.comment)}</div>` : ''}
+          </div>
+          <button class="food-delete-btn${adminMode ? ' visible' : ''}" onclick="event.stopPropagation();foodsDelete('${f.id}')">刪除</button>
+        </div>
+      `).join('');
+    }
+
+    function foodsToggleForm() {
+      document.getElementById('foods-form').classList.toggle('open');
+    }
+
+    async function foodsAddItem() {
+      const name    = document.getElementById('food-name').value.trim();
+      const mapUrl  = document.getElementById('food-map').value.trim();
+      const image   = document.getElementById('food-img').value.trim();
+      const comment = document.getElementById('food-comment').value.trim();
+      if (!name) return;
+      try {
+        await db.collection('foods').add({
+          name, mapUrl, image, comment,
+          created_at: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        ['food-name','food-map','food-img','food-comment'].forEach(id => {
+          document.getElementById(id).value = '';
+        });
+        document.getElementById('foods-form').classList.remove('open');
+      } catch(err) { console.error('Add food failed:', err); }
+    }
+
+    async function foodsDelete(id) {
+      if (!confirm('刪除此店家？')) return;
+      try {
+        await db.collection('foods').doc(id).delete();
+      } catch(err) { console.error('Delete food failed:', err); }
+    }
+
+    db.collection('foods').orderBy('created_at').onSnapshot(renderFoods,
+      err => console.error('Foods snapshot error:', err));
 
     // ── Packing List ──
     const PACKING_DEFAULTS = [
