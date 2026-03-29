@@ -239,8 +239,9 @@
     .ri-back:hover { color: #fff; }
 
     .ri-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(2.8rem, 12vw, 5rem);
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: clamp(2rem, 9vw, 3.5rem);
+      font-weight: 700;
       letter-spacing: 0.15em;
       color: #fff;
       text-align: center;
@@ -278,12 +279,186 @@
     }
 
     .ri-card-label {
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
       font-size: clamp(16px, 4.5vw, 20px);
       font-weight: 600;
       color: #fff;
       text-align: center;
       line-height: 1.3;
     }
+
+    /* ── Packing Page ── */
+    #packing {
+      background: #0a1c14;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .pk-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: calc(env(safe-area-inset-top, 0px) + 1rem) 1.2rem 0.8rem;
+      background: #0a1c14;
+    }
+
+    .pk-back {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.7);
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0.5rem 0.3rem;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: color 0.2s;
+    }
+
+    .pk-back:hover { color: #fff; }
+
+    .pk-title {
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.05em;
+    }
+
+    .pk-reset-btn {
+      background: none;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+      color: rgba(255, 255, 255, 0.7);
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.78rem;
+      padding: 0.35rem 0.8rem;
+      cursor: pointer;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .pk-reset-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .pk-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 0.25rem 1.2rem 1rem;
+    }
+
+    .pk-item {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      min-height: 44px;
+    }
+
+    .pk-item:last-child { border-bottom: none; }
+
+    .pk-checkbox {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .pk-item.checked .pk-checkbox {
+      background: #3a9e62;
+      border-color: #3a9e62;
+    }
+
+    .pk-item.checked .pk-checkbox::after {
+      content: '';
+      width: 12px;
+      height: 7px;
+      border-left: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      transform: rotate(-45deg) translateY(-1px);
+      display: block;
+    }
+
+    .pk-item-label {
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 1rem;
+      color: #fff;
+      line-height: 1.4;
+      transition: opacity 0.15s;
+    }
+
+    .pk-item.checked .pk-item-label {
+      opacity: 0.35;
+      text-decoration: line-through;
+    }
+
+    .pk-footer {
+      flex-shrink: 0;
+      padding: 0.8rem 1.2rem calc(env(safe-area-inset-bottom, 0px) + 1rem);
+      background: #0a1c14;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .pk-add-label {
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: 0.5rem;
+    }
+
+    .pk-add-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pk-add-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: #fff;
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.95rem;
+      padding: 0.6rem 0.9rem;
+      outline: none;
+      min-height: 44px;
+    }
+
+    .pk-add-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+    .pk-add-input:focus { border-color: rgba(255, 255, 255, 0.4); }
+
+    .pk-add-btn {
+      background: rgba(58, 158, 98, 0.4);
+      border: 1px solid rgba(58, 158, 98, 0.6);
+      border-radius: 10px;
+      color: #fff;
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      min-height: 44px;
+      transition: background 0.2s;
+    }
+
+    .pk-add-btn:hover { background: rgba(58, 158, 98, 0.65); }
 
     #about {
       background: #0e0e0e;
@@ -1366,7 +1541,7 @@
       </div>
 
       <!-- 我要帶什麼 -->
-      <div class="ri-card">
+      <div class="ri-card" onclick="showSection('packing');packingRender()">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="7" width="20" height="14" rx="2"/>
           <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
@@ -1394,6 +1569,27 @@
           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
         </svg>
         <span class="ri-card-label">貼心設備</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Packing Page ── -->
+  <section class="page-section" id="packing">
+    <div class="pk-header">
+      <button class="pk-back" onclick="showSection('rooms')">&#8592; 返回</button>
+      <span class="pk-title">我要帶什麼</span>
+      <button class="pk-reset-btn" onclick="packingReset()">重新檢查</button>
+    </div>
+
+    <div class="pk-scroll">
+      <div id="pk-list"></div>
+    </div>
+
+    <div class="pk-footer">
+      <div class="pk-add-label">其他</div>
+      <div class="pk-add-row">
+        <input class="pk-add-input" id="pk-add-input" type="text" placeholder="新增自訂項目" />
+        <button class="pk-add-btn" onclick="packingAddCustom()">＋ 新增</button>
       </div>
     </div>
   </section>
@@ -2135,6 +2331,75 @@
         adminPanelOpen = false;
       }
     });
+
+    // ── Packing List ──
+    const PACKING_DEFAULTS = [
+      '牙刷', '毛巾', '個人盥洗用品', '眼鏡',
+      '隱眼（如果你習慣戴日拋）', '睡衣', '隔天的外出衣',
+      '充電器', '行動電源', '錢包', '鑰匙',
+      '常用藥（過敏 / 頭痛）', '化妝 / 卸妝用品（需要者）'
+    ];
+
+    function packingLoad() {
+      let checked = [], custom = [];
+      try {
+        checked = JSON.parse(localStorage.getItem('chiayi_pk_checked') || '[]');
+        custom  = JSON.parse(localStorage.getItem('chiayi_pk_custom')  || '[]');
+      } catch(e) {}
+      return { checked, custom };
+    }
+
+    function packingSave(checked, custom) {
+      localStorage.setItem('chiayi_pk_checked', JSON.stringify(checked));
+      localStorage.setItem('chiayi_pk_custom',  JSON.stringify(custom));
+    }
+
+    function packingRender() {
+      const { checked, custom } = packingLoad();
+      const allItems = [...PACKING_DEFAULTS, ...custom];
+      const list = document.getElementById('pk-list');
+      if (!list) return;
+      list.innerHTML = allItems.map(item => `
+        <div class="pk-item${checked.includes(item) ? ' checked' : ''}" onclick="packingToggle(${JSON.stringify(item)})">
+          <div class="pk-checkbox"></div>
+          <span class="pk-item-label">${item}</span>
+        </div>
+      `).join('');
+    }
+
+    function packingToggle(item) {
+      const { checked, custom } = packingLoad();
+      const idx = checked.indexOf(item);
+      if (idx === -1) checked.push(item); else checked.splice(idx, 1);
+      packingSave(checked, custom);
+      packingRender();
+    }
+
+    function packingAddCustom() {
+      const input = document.getElementById('pk-add-input');
+      const val = input.value.trim();
+      if (!val) return;
+      const { checked, custom } = packingLoad();
+      if (!custom.includes(val) && !PACKING_DEFAULTS.includes(val)) {
+        custom.push(val);
+        packingSave(checked, custom);
+        packingRender();
+      }
+      input.value = '';
+    }
+
+    function packingReset() {
+      if (!confirm('清空所有勾選？')) return;
+      localStorage.removeItem('chiayi_pk_checked');
+      localStorage.removeItem('chiayi_pk_custom');
+      packingRender();
+    }
+
+    document.getElementById('pk-add-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') packingAddCustom();
+    });
+
+    packingRender();
 
     // ── Init ──
     renderCalendar();
