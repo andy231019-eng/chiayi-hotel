@@ -483,9 +483,9 @@
 
     #foods-admin-gear {
       position: fixed;
-      bottom: 90px;
+      bottom: 20px;
       right: 20px;
-      z-index: 30;
+      z-index: 9999;
       width: 52px;
       height: 52px;
       border-radius: 50%;
@@ -507,9 +507,9 @@
 
     .foods-add-btn {
       position: fixed;
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+      bottom: 90px;
       right: 20px;
-      z-index: 20;
+      z-index: 9999;
       background: rgba(58, 158, 98, 0.85);
       border: none;
       border-radius: 50px;
@@ -2220,7 +2220,7 @@
       // Foods-specific admin UI
       const onFoods = id === 'foods';
       document.getElementById('foods-admin-gear').classList.toggle('visible', onFoods);
-      document.getElementById('foods-add-btn').classList.toggle('visible', onFoods && adminMode);
+      document.getElementById('foods-add-btn').style.display = (onFoods && isAdmin) ? 'flex' : 'none';
       if (!onFoods && isAdmin) { isAdmin = false; }
     }
 
@@ -2268,13 +2268,13 @@
 
         uploadArea.classList.add('visible');
         document.getElementById('admin-panel-btn').classList.add('visible');
-        document.getElementById('foods-add-btn').classList.toggle('visible', currentSection === 'foods');
+        document.getElementById('foods-add-btn').style.display = currentSection === 'foods' ? 'flex' : 'none';
       } else {
         // Restore nav onclicks
         btnBooking.setAttribute('onclick', "showSection('booking')");
         btnRooms.setAttribute('onclick',   "showSection('rooms')");
         btnAbout.setAttribute('onclick',   "showComingSoonModal()");
-        document.getElementById('foods-add-btn').classList.remove('visible');
+        document.getElementById('foods-add-btn').style.display = 'none';
         document.getElementById('foods-form').classList.remove('open');
 
         siteTitle.removeEventListener('input', saveTitleHandler);
@@ -2796,12 +2796,14 @@
 
     function onAdminPinSuccess() {
       isAdmin = true;
+      document.getElementById('foods-add-btn').style.display = 'flex';
       renderFoods(foodsCache);
     }
 
     document.getElementById('foods-admin-gear').onclick = () => {
       if (isAdmin) {
         isAdmin = false;
+        document.getElementById('foods-add-btn').style.display = 'none';
         renderFoods(foodsCache);
         return;
       }
