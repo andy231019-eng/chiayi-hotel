@@ -1832,6 +1832,24 @@
       selectStep  = 'checkin';
 
       try {
+        // Send confirmation email first to verify EmailJS is working
+        console.log('About to send email to:', email);
+        try {
+          const emailResult = await emailjs.send("service_slc55q4", "template_hlss77g", {
+            to_email:     email,
+            guest_name:   name,
+            check_in:     savedCheckIn,
+            check_out:    savedCheckOut,
+            guests:       guests,
+            arrival_time: arrival,
+            phone_number: phone,
+            notes:        note
+          });
+          console.log('EmailJS send success:', emailResult.status, emailResult.text);
+        } catch (emailErr) {
+          console.error('EmailJS send failed:', emailErr);
+        }
+
         await db.collection('bookings').add({
           guest_name:   name,
           check_in:     savedCheckIn,
@@ -1851,18 +1869,6 @@
 
         document.getElementById('booking-form').style.display = 'none';
         document.getElementById('booking-success').classList.add('visible');
-
-        // Send confirmation email — non-blocking
-        console.log('About to send email to:', email);
-        emailjs.send("service_slc55q4", "template_nd4tm7a", {
-          to_email:     email,
-          guest_name:   name,
-          check_in:     savedCheckIn,
-          check_out:    savedCheckOut,
-          guests:       guests,
-          arrival_time: arrival
-        }).catch(err => console.error('EmailJS send failed:', err));
-        console.log('emailjs.send() called');
       } catch (err) {
         console.error('Booking failed:', err);
         // Restore dates so the user can try again
