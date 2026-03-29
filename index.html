@@ -1777,9 +1777,7 @@
       <button class="foods-form-submit" onclick="foodsAddItem()">送出</button>
     </div>
 
-    <div class="foods-scroll" id="foods-list">
-      <div class="foods-empty">載入中…</div>
-    </div>
+    <div class="foods-scroll" id="foods-list"></div>
   </section>
 
   <!-- ── About Section ── -->
@@ -2525,12 +2523,11 @@
     });
 
     // ── Foods ──
-    function renderFoods(snapshot) {
-      const foods = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    function renderFoods(foods) {
       const list = document.getElementById('foods-list');
       if (!list) return;
       if (!foods.length) {
-        list.innerHTML = '<div class="foods-empty">還沒有推薦店家</div>';
+        list.innerHTML = '<div class="foods-empty">尚無店家</div>';
         return;
       }
       list.innerHTML = foods.map(f => `
@@ -2546,6 +2543,16 @@
         </div>
       `).join('');
     }
+
+    const foodsRef = db.collection('foods').orderBy('created_at');
+    foodsRef.onSnapshot(
+      snapshot => renderFoods(snapshot.docs.map(d => ({ id: d.id, ...d.data() }))),
+      err => {
+        console.error('Foods snapshot error:', err);
+        const list = document.getElementById('foods-list');
+        if (list) list.innerHTML = '<div class="foods-empty">載入失敗，請稍後再試</div>';
+      }
+    );
 
     function foodsToggleForm() {
       document.getElementById('foods-form').classList.toggle('open');
@@ -2575,9 +2582,6 @@
         await db.collection('foods').doc(id).delete();
       } catch(err) { console.error('Delete food failed:', err); }
     }
-
-    db.collection('foods').orderBy('created_at').onSnapshot(renderFoods,
-      err => console.error('Foods snapshot error:', err));
 
     // ── Packing List ──
     const PACKING_DEFAULTS = [
