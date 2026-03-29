@@ -2210,10 +2210,17 @@
       pinModal.classList.remove('open');
     }
 
+    let pinSuccessCallback = null;
+
     function confirmPIN() {
       if (pinInput.value === CORRECT_PIN) {
         closeModal();
-        setAdmin(true);
+        if (pinSuccessCallback) {
+          pinSuccessCallback();
+          pinSuccessCallback = null;
+        } else {
+          setAdmin(true);
+        }
       } else {
         pinError.style.display = 'block';
         pinInput.value = '';
@@ -2672,17 +2679,19 @@
     let isAdmin = false;
     let foodsCache = [];
 
+    function onAdminPinSuccess() {
+      isAdmin = true;
+      renderFoods(foodsCache);
+    }
+
     document.getElementById('foods-admin-gear').onclick = () => {
       if (isAdmin) {
         isAdmin = false;
         renderFoods(foodsCache);
         return;
       }
-      const pwd = prompt('輸入管理員密碼');
-      if (pwd === CORRECT_PIN) {
-        isAdmin = true;
-        renderFoods(foodsCache);
-      }
+      pinSuccessCallback = onAdminPinSuccess;
+      openModal();
     };
 
     function renderFoods(foods) {
