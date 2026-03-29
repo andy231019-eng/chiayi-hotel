@@ -587,21 +587,24 @@
       background: rgba(255, 255, 255, 0.07);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 16px;
-      overflow: hidden;
       cursor: pointer;
       transition: background 0.2s;
       position: relative;
       display: flex;
       flex-direction: column;
+      height: auto;
     }
+
+    .food-card > * { flex-shrink: 0; }
 
     .food-card:hover, .food-card:active { background: rgba(34, 120, 70, 0.3); }
 
     .food-card img {
       width: 100%;
-      height: 180px;
+      height: 160px;
       object-fit: cover;
       display: block;
+      flex-shrink: 0;
     }
 
     .food-card-img-placeholder {
@@ -615,12 +618,15 @@
     }
 
     .food-info {
+      display: block;
+      height: auto;
       padding: 14px 16px;
       background: rgba(0, 0, 0, 0.15);
       position: relative;
     }
 
     .food-title {
+      display: block;
       font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
       font-size: 16px;
       font-weight: 600;
@@ -629,6 +635,7 @@
     }
 
     .food-comment {
+      display: block;
       font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
       font-size: 14px;
       color: rgba(255, 255, 255, 0.9);
