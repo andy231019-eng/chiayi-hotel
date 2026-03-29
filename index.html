@@ -1767,6 +1767,7 @@
       });
       const target = document.getElementById(id);
       if (target) target.classList.add('active-section');
+      adminToggle.style.display = (id === 'packing') ? 'none' : '';
     }
 
     // ── Load saved values ──
