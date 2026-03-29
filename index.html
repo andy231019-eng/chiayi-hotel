@@ -466,7 +466,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: calc(env(safe-area-inset-top, 0px) + 1rem) 1.2rem 0.8rem;
+      padding: calc(env(safe-area-inset-top, 0px) + 60px) 1.2rem 0.8rem;
       background: #0a1c14;
       gap: 0.5rem;
     }
@@ -481,10 +481,10 @@
     }
 
     .foods-admin-badge {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      z-index: 10;
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 110;
       background: rgba(111, 162, 142, 0.25);
       border: 1px solid rgba(111, 162, 142, 0.5);
       border-radius: 20px;
@@ -628,13 +628,11 @@
 
     .food-admin-btns {
       position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
+      top: 10px;
+      right: 10px;
       display: none;
       gap: 6px;
     }
-
-    .food-admin-btns.visible { display: flex; }
 
     .food-edit-btn,
     .food-delete-btn {
@@ -2673,7 +2671,7 @@
         list.innerHTML = '<div class="foods-empty">尚無店家</div>';
         return;
       }
-      const adminClass = adminMode ? ' visible' : '';
+      const adminDisplay = adminMode ? 'flex' : 'none';
       list.innerHTML = foods.map(f => `
         <div class="food-card" onclick="if(event.target.closest('.food-admin-btns'))return;window.open(${JSON.stringify(f.mapUrl || '')}, '_blank')">
           ${f.image
@@ -2683,7 +2681,7 @@
             <div class="food-card-name">${escHtml(f.name || '')}</div>
             ${f.comment ? `<div class="food-card-comment">${escHtml(f.comment)}</div>` : ''}
           </div>
-          <div class="food-admin-btns${adminClass}">
+          <div class="food-admin-btns" style="display:${adminDisplay}">
             <button class="food-edit-btn"   onclick="event.stopPropagation();foodsOpenEdit('${f.id}',${JSON.stringify(f.name||'')},${JSON.stringify(f.mapUrl||'')},${JSON.stringify(f.image||'')},${JSON.stringify(f.comment||'')})">編輯</button>
             <button class="food-delete-btn" onclick="event.stopPropagation();foodsDelete('${f.id}')">刪除</button>
           </div>
