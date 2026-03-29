@@ -660,6 +660,73 @@
     .food-edit-btn:hover   { background: rgba(58, 120, 180, 1); }
     .food-delete-btn:hover { background: rgba(180, 40, 40, 1); }
 
+    /* ── Foods category tabs ── */
+    .foods-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 0.6rem 1.2rem;
+      flex-shrink: 0;
+      scrollbar-width: none;
+    }
+    .foods-tabs::-webkit-scrollbar { display: none; }
+
+    .foods-tab {
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      color: rgba(255, 255, 255, 0.75);
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.85rem;
+      padding: 0.35rem 0.9rem;
+      cursor: pointer;
+      min-height: 36px;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
+    }
+    .foods-tab.active {
+      background: rgba(34, 120, 70, 0.85);
+      border-color: rgba(34, 120, 70, 1);
+      color: #fff;
+    }
+    .foods-tab:active { opacity: 0.75; }
+
+    /* ── Category row in add/edit form ── */
+    .foods-form-category-row {
+      display: flex;
+      gap: 8px;
+    }
+    .foods-form-select {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      color: #fff;
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.9rem;
+      padding: 0.55rem 0.9rem;
+      outline: none;
+      min-height: 44px;
+      cursor: pointer;
+    }
+    .foods-form-select option { background: #0f2318; color: #fff; }
+    .add-category-btn {
+      background: rgba(58, 158, 98, 0.5);
+      border: 1px solid rgba(58, 158, 98, 0.7);
+      border-radius: 10px;
+      color: #fff;
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.8rem;
+      padding: 0 0.85rem;
+      cursor: pointer;
+      min-height: 44px;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+    .add-category-btn:hover { background: rgba(58, 158, 98, 0.75); }
+
     /* ── Foods edit modal ── */
     #foods-edit-overlay {
       position: fixed;
@@ -1963,11 +2030,17 @@
     <button id="foods-admin-gear">⚙</button>
     <button class="foods-add-btn" id="foods-add-btn" onclick="foodsToggleForm()">＋</button>
 
+    <div class="foods-tabs" id="foods-tabs"></div>
+
     <div class="foods-form" id="foods-form">
       <input class="foods-form-input" id="food-name" type="text" placeholder="店名" />
       <input class="foods-form-input" id="food-map" type="url" placeholder="Google Maps URL" />
       <input class="foods-form-input" id="food-img" type="url" placeholder="圖片 URL（選填）" />
       <textarea class="foods-form-input" id="food-comment" placeholder="主人評論" rows="2"></textarea>
+      <div class="foods-form-category-row">
+        <select class="foods-form-select" id="food-category"></select>
+        <button class="add-category-btn" id="add-category-btn">新增種類</button>
+      </div>
       <button class="foods-form-submit" onclick="foodsAddItem()">送出</button>
     </div>
 
@@ -2033,6 +2106,7 @@
       <input  class="foods-form-input" id="edit-food-map"     type="url"  placeholder="Google Maps URL" />
       <input  class="foods-form-input" id="edit-food-img"     type="url"  placeholder="圖片 URL（選填）" />
       <textarea class="foods-form-input" id="edit-food-comment" placeholder="主人評論" rows="2"></textarea>
+      <select class="foods-form-select" id="edit-food-category"></select>
       <div class="foods-edit-actions">
         <button class="foods-edit-cancel" onclick="foodsCloseEdit()">取消</button>
         <button class="foods-edit-save"   onclick="foodsSaveEdit()">儲存</button>
@@ -2793,6 +2867,45 @@
     // ── Foods ──
     let isAdmin = false;
     let foodsCache = [];
+    let categories = [];
+    let currentCategory = '全部';
+    const tabsContainer = document.getElementById('foods-tabs');
+    const foodsCategoryDropdown = document.getElementById('food-category');
+    const editCategoryDropdown  = document.getElementById('edit-food-category');
+
+    db.collection('foodCategories').orderBy('created_at').onSnapshot(s => {
+      categories = ['全部', ...s.docs.map(d => d.data().name)];
+      renderTabs();
+      renderCategoryDropdown();
+    });
+
+    function renderTabs() {
+      tabsContainer.innerHTML = categories.map(c =>
+        `<button class="foods-tab ${c === currentCategory ? 'active' : ''}" onclick="selectCategory(${JSON.stringify(c)})">${escHtml(c)}</button>`
+      ).join('');
+    }
+
+    function renderCategoryDropdown() {
+      const opts = categories.filter(c => c !== '全部').map(c => `<option>${escHtml(c)}</option>`).join('');
+      foodsCategoryDropdown.innerHTML = opts;
+      editCategoryDropdown.innerHTML  = opts;
+    }
+
+    function selectCategory(c) {
+      currentCategory = c;
+      renderTabs();
+      renderFoods(foodsCache);
+    }
+
+    document.getElementById('add-category-btn').onclick = () => {
+      const name = prompt('輸入新種類');
+      if (name && name.trim()) {
+        db.collection('foodCategories').add({
+          name: name.trim(),
+          created_at: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+    };
 
     function onAdminPinSuccess() {
       isAdmin = true;
@@ -2814,12 +2927,15 @@
     function renderFoods(foods) {
       const list = document.getElementById('foods-list');
       if (!list) return;
-      if (!foods.length) {
+      const filtered = currentCategory === '全部'
+        ? foods
+        : foods.filter(f => f.category === currentCategory);
+      if (!filtered.length) {
         list.innerHTML = '<div class="foods-empty">尚無店家</div>';
         return;
       }
       list.innerHTML = '';
-      foods.forEach(f => {
+      filtered.forEach(f => {
         const card = document.createElement('div');
         card.className = 'food-card';
         card.onclick = e => {
@@ -2845,7 +2961,7 @@
           <button class="food-delete-btn">刪除</button>`;
         adminBtns.querySelector('.food-edit-btn').onclick = e => {
           e.stopPropagation();
-          foodsOpenEdit(f.id, f.name || '', f.mapUrl || '', f.image || '', f.comment || '');
+          foodsOpenEdit(f.id, f.name || '', f.mapUrl || '', f.image || '', f.comment || '', f.category || '');
         };
         adminBtns.querySelector('.food-delete-btn').onclick = e => {
           e.stopPropagation();
@@ -2875,14 +2991,15 @@
     }
 
     async function foodsAddItem() {
-      const name    = document.getElementById('food-name').value.trim();
-      const mapUrl  = document.getElementById('food-map').value.trim();
-      const image   = document.getElementById('food-img').value.trim();
-      const comment = document.getElementById('food-comment').value.trim();
+      const name     = document.getElementById('food-name').value.trim();
+      const mapUrl   = document.getElementById('food-map').value.trim();
+      const image    = document.getElementById('food-img').value.trim();
+      const comment  = document.getElementById('food-comment').value.trim();
+      const category = document.getElementById('food-category').value;
       if (!name) return;
       try {
         await db.collection('foods').add({
-          name, mapUrl, image, comment,
+          name, mapUrl, image, comment, category,
           created_at: firebase.firestore.FieldValue.serverTimestamp()
         });
         ['food-name','food-map','food-img','food-comment'].forEach(id => {
@@ -2901,12 +3018,13 @@
 
     let editingFoodId = null;
 
-    function foodsOpenEdit(id, name, mapUrl, image, comment) {
+    function foodsOpenEdit(id, name, mapUrl, image, comment, category) {
       editingFoodId = id;
-      document.getElementById('edit-food-name').value    = name;
-      document.getElementById('edit-food-map').value     = mapUrl;
-      document.getElementById('edit-food-img').value     = image;
-      document.getElementById('edit-food-comment').value = comment;
+      document.getElementById('edit-food-name').value     = name;
+      document.getElementById('edit-food-map').value      = mapUrl;
+      document.getElementById('edit-food-img').value      = image;
+      document.getElementById('edit-food-comment').value  = comment;
+      document.getElementById('edit-food-category').value = category;
       document.getElementById('foods-edit-overlay').classList.add('open');
     }
 
@@ -2917,13 +3035,14 @@
 
     async function foodsSaveEdit() {
       if (!editingFoodId) return;
-      const name    = document.getElementById('edit-food-name').value.trim();
-      const mapUrl  = document.getElementById('edit-food-map').value.trim();
-      const image   = document.getElementById('edit-food-img').value.trim();
-      const comment = document.getElementById('edit-food-comment').value.trim();
+      const name     = document.getElementById('edit-food-name').value.trim();
+      const mapUrl   = document.getElementById('edit-food-map').value.trim();
+      const image    = document.getElementById('edit-food-img').value.trim();
+      const comment  = document.getElementById('edit-food-comment').value.trim();
+      const category = document.getElementById('edit-food-category').value;
       if (!name) return;
       try {
-        await db.collection('foods').doc(editingFoodId).update({ name, mapUrl, image, comment });
+        await db.collection('foods').doc(editingFoodId).update({ name, mapUrl, image, comment, category });
         foodsCloseEdit();
       } catch(err) { console.error('Update food failed:', err); }
     }
