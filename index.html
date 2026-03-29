@@ -626,11 +626,18 @@
       line-height: 1.5;
     }
 
-    .food-delete-btn {
+    .food-admin-btns {
       position: absolute;
       top: 0.5rem;
       right: 0.5rem;
-      background: rgba(180, 40, 40, 0.8);
+      display: none;
+      gap: 6px;
+    }
+
+    .food-admin-btns.visible { display: flex; }
+
+    .food-edit-btn,
+    .food-delete-btn {
       border: none;
       border-radius: 8px;
       color: #fff;
@@ -639,11 +646,93 @@
       padding: 0.25rem 0.6rem;
       cursor: pointer;
       min-height: 32px;
-      display: none;
+      display: flex;
       align-items: center;
     }
 
-    .food-delete-btn.visible { display: flex; }
+    .food-edit-btn   { background: rgba(58, 120, 180, 0.85); }
+    .food-delete-btn { background: rgba(180, 40, 40, 0.85); }
+    .food-edit-btn:hover   { background: rgba(58, 120, 180, 1); }
+    .food-delete-btn:hover { background: rgba(180, 40, 40, 1); }
+
+    /* ── Foods edit modal ── */
+    #foods-edit-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 500;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    #foods-edit-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #foods-edit-box {
+      background: #0f2318;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px 20px 0 0;
+      padding: 1.4rem 1.2rem calc(env(safe-area-inset-bottom,0px) + 1.4rem);
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      transform: translateY(20px);
+      transition: transform 0.2s;
+    }
+
+    #foods-edit-overlay.open #foods-edit-box { transform: translateY(0); }
+
+    .foods-edit-title {
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.2rem;
+    }
+
+    .foods-edit-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 0.2rem;
+    }
+
+    .foods-edit-cancel {
+      flex: 1;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 10px;
+      color: rgba(255,255,255,0.7);
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.9rem;
+      padding: 0.65rem;
+      cursor: pointer;
+      min-height: 44px;
+    }
+
+    .foods-edit-save {
+      flex: 2;
+      background: rgba(58,158,98,0.55);
+      border: 1px solid rgba(58,158,98,0.7);
+      border-radius: 10px;
+      color: #fff;
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.65rem;
+      cursor: pointer;
+      min-height: 44px;
+      transition: background 0.2s;
+    }
+
+    .foods-edit-save:hover { background: rgba(58,158,98,0.8); }
 
     .foods-empty {
       font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
@@ -1817,6 +1906,21 @@
     </div>
   </section>
 
+  <!-- ── Foods Edit Modal ── -->
+  <div id="foods-edit-overlay" onclick="if(event.target===this)foodsCloseEdit()">
+    <div id="foods-edit-box">
+      <div class="foods-edit-title">編輯店家</div>
+      <input  class="foods-form-input" id="edit-food-name"    type="text" placeholder="店名" />
+      <input  class="foods-form-input" id="edit-food-map"     type="url"  placeholder="Google Maps URL" />
+      <input  class="foods-form-input" id="edit-food-img"     type="url"  placeholder="圖片 URL（選填）" />
+      <textarea class="foods-form-input" id="edit-food-comment" placeholder="主人評論" rows="2"></textarea>
+      <div class="foods-edit-actions">
+        <button class="foods-edit-cancel" onclick="foodsCloseEdit()">取消</button>
+        <button class="foods-edit-save"   onclick="foodsSaveEdit()">儲存</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── Coming Soon Modal ── -->
   <div id="coming-soon-overlay">
     <div id="coming-soon-box">
@@ -2569,8 +2673,9 @@
         list.innerHTML = '<div class="foods-empty">尚無店家</div>';
         return;
       }
+      const adminClass = adminMode ? ' visible' : '';
       list.innerHTML = foods.map(f => `
-        <div class="food-card" onclick="if(event.target.closest('.food-delete-btn'))return;window.open(${JSON.stringify(f.mapUrl || '')}, '_blank')">
+        <div class="food-card" onclick="if(event.target.closest('.food-admin-btns'))return;window.open(${JSON.stringify(f.mapUrl || '')}, '_blank')">
           ${f.image
             ? `<img class="food-card-img" src="${escHtml(f.image)}" alt="${escHtml(f.name)}" loading="lazy" />`
             : `<div class="food-card-img-placeholder">🍽</div>`}
@@ -2578,7 +2683,10 @@
             <div class="food-card-name">${escHtml(f.name || '')}</div>
             ${f.comment ? `<div class="food-card-comment">${escHtml(f.comment)}</div>` : ''}
           </div>
-          <button class="food-delete-btn${adminMode ? ' visible' : ''}" onclick="event.stopPropagation();foodsDelete('${f.id}')">刪除</button>
+          <div class="food-admin-btns${adminClass}">
+            <button class="food-edit-btn"   onclick="event.stopPropagation();foodsOpenEdit('${f.id}',${JSON.stringify(f.name||'')},${JSON.stringify(f.mapUrl||'')},${JSON.stringify(f.image||'')},${JSON.stringify(f.comment||'')})">編輯</button>
+            <button class="food-delete-btn" onclick="event.stopPropagation();foodsDelete('${f.id}')">刪除</button>
+          </div>
         </div>
       `).join('');
     }
@@ -2620,6 +2728,35 @@
       try {
         await db.collection('foods').doc(id).delete();
       } catch(err) { console.error('Delete food failed:', err); }
+    }
+
+    let editingFoodId = null;
+
+    function foodsOpenEdit(id, name, mapUrl, image, comment) {
+      editingFoodId = id;
+      document.getElementById('edit-food-name').value    = name;
+      document.getElementById('edit-food-map').value     = mapUrl;
+      document.getElementById('edit-food-img').value     = image;
+      document.getElementById('edit-food-comment').value = comment;
+      document.getElementById('foods-edit-overlay').classList.add('open');
+    }
+
+    function foodsCloseEdit() {
+      document.getElementById('foods-edit-overlay').classList.remove('open');
+      editingFoodId = null;
+    }
+
+    async function foodsSaveEdit() {
+      if (!editingFoodId) return;
+      const name    = document.getElementById('edit-food-name').value.trim();
+      const mapUrl  = document.getElementById('edit-food-map').value.trim();
+      const image   = document.getElementById('edit-food-img').value.trim();
+      const comment = document.getElementById('edit-food-comment').value.trim();
+      if (!name) return;
+      try {
+        await db.collection('foods').doc(editingFoodId).update({ name, mapUrl, image, comment });
+        foodsCloseEdit();
+      } catch(err) { console.error('Update food failed:', err); }
     }
 
     // ── Packing List ──
