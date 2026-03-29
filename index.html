@@ -746,6 +746,85 @@
       padding: 3rem 0;
     }
 
+    /* ── Amenities Page ── */
+    #amenities {
+      background: #0a1c14;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .am-header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      padding: calc(env(safe-area-inset-top, 0px) + 1rem) 1.2rem 0.8rem;
+      background: #0a1c14;
+      gap: 0.8rem;
+    }
+
+    .am-title {
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      flex: 1;
+      text-align: center;
+    }
+
+    .am-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 0.5rem 1.4rem calc(env(safe-area-inset-bottom, 0px) + 2rem);
+    }
+
+    .am-section {
+      margin-top: 1.6rem;
+    }
+
+    .am-section:first-child {
+      margin-top: 0.4rem;
+    }
+
+    .am-section-title {
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.45);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .am-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      min-height: 44px;
+    }
+
+    .am-item:last-child {
+      border-bottom: none;
+    }
+
+    .am-item-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      line-height: 1.5;
+    }
+
+    .am-item-text {
+      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.88);
+      line-height: 1.5;
+    }
+
     #about {
       background: #0e0e0e;
       display: flex;
@@ -1850,7 +1929,7 @@
       </div>
 
       <!-- 貼心設備 -->
-      <div class="ri-card">
+      <div class="ri-card" onclick="showSection('amenities')">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
         </svg>
@@ -1898,6 +1977,47 @@
     </div>
 
     <div class="foods-scroll" id="foods-list"></div>
+  </section>
+
+  <!-- ── Amenities Section ── -->
+  <section class="page-section" id="amenities">
+    <div class="am-header">
+      <button class="pk-back" onclick="showSection('rooms')">&#8592; 返回</button>
+      <span class="am-title">貼心設備</span>
+    </div>
+
+    <div class="am-scroll">
+
+      <div class="am-section">
+        <div class="am-section-title">客廳區</div>
+        <div class="am-item"><span class="am-item-icon">💧</span><span class="am-item-text">煮過濾過的超好喝水</span></div>
+        <div class="am-item"><span class="am-item-icon">☕</span><span class="am-item-text">給你滿滿能量的咖啡機</span></div>
+        <div class="am-item"><span class="am-item-icon">♨️</span><span class="am-item-text">秒給你燒燙燙水的瞬熱式飲水機</span></div>
+        <div class="am-item"><span class="am-item-icon">🍚</span><span class="am-item-text">煮出香噴噴米飯的小主廚電鍋</span></div>
+        <div class="am-item"><span class="am-item-icon">🍪</span><span class="am-item-text">零食櫃和可沖泡的飲品</span></div>
+        <div class="am-item"><span class="am-item-icon">🪑</span><span class="am-item-text">quokka抱著你的露營椅</span></div>
+      </div>
+
+      <div class="am-section">
+        <div class="am-section-title">賞心悅目</div>
+        <div class="am-item"><span class="am-item-icon">🎵</span><span class="am-item-text">田馥甄的四張專輯</span></div>
+        <div class="am-item"><span class="am-item-icon">🐹</span><span class="am-item-text">很多可愛的Quokka公仔</span></div>
+        <div class="am-item"><span class="am-item-icon">🖼️</span><span class="am-item-text">精心收藏的海報</span></div>
+      </div>
+
+      <div class="am-section">
+        <div class="am-section-title">廁所區</div>
+        <div class="am-item"><span class="am-item-icon">🧴</span><span class="am-item-text">洗面乳 / 沐浴乳 / 洗髮精 / 護髮乳</span></div>
+        <div class="am-item"><span class="am-item-icon">🪥</span><span class="am-item-text">牙膏 / 牙線</span></div>
+      </div>
+
+      <div class="am-section">
+        <div class="am-section-title">書房</div>
+        <div class="am-item"><span class="am-item-icon">💨</span><span class="am-item-text">吹風機</span></div>
+        <div class="am-item"><span class="am-item-icon">🎮</span><span class="am-item-text">Switch</span></div>
+      </div>
+
+    </div>
   </section>
 
   <!-- ── About Section ── -->
