@@ -357,43 +357,28 @@
       padding: 0.25rem 1.2rem 1rem;
     }
 
-    .pk-item {
+    .check-item {
       display: flex;
       align-items: center;
-      gap: 0.9rem;
+      gap: 12px;
+      cursor: pointer;
       padding: 0.85rem 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      cursor: pointer;
       min-height: 44px;
+      width: 100%;
     }
 
-    .pk-item:last-child { border-bottom: none; }
+    .check-item:last-child { border-bottom: none; }
 
-    .pk-checkbox {
+    .check-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
       flex-shrink: 0;
-      width: 22px;
-      height: 22px;
-      border: 1.5px solid rgba(255, 255, 255, 0.4);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.15s, border-color 0.15s;
-    }
-
-    .pk-item.checked .pk-checkbox {
-      background: #3a9e62;
-      border-color: #3a9e62;
-    }
-
-    .pk-item.checked .pk-checkbox::after {
-      content: '';
-      width: 12px;
-      height: 7px;
-      border-left: 2px solid #fff;
-      border-bottom: 2px solid #fff;
-      transform: rotate(-45deg) translateY(-1px);
-      display: block;
+      accent-color: #3a9e62;
+      position: static;
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .pk-item-label {
@@ -401,10 +386,10 @@
       font-size: 1rem;
       color: #fff;
       line-height: 1.4;
-      transition: opacity 0.15s;
+      transition: opacity 0.15s, text-decoration 0.15s;
     }
 
-    .pk-item.checked .pk-item-label {
+    .check-item input[type="checkbox"]:checked + .pk-item-label {
       opacity: 0.35;
       text-decoration: line-through;
     }
@@ -2360,10 +2345,10 @@
       const list = document.getElementById('pk-list');
       if (!list) return;
       list.innerHTML = allItems.map(item => `
-        <div class="pk-item${checked.includes(item) ? ' checked' : ''}" onclick="packingToggle(${JSON.stringify(item)})">
-          <div class="pk-checkbox"></div>
+        <label class="check-item">
+          <input type="checkbox" ${checked.includes(item) ? 'checked' : ''} onchange="packingToggle(${JSON.stringify(item)})" />
           <span class="pk-item-label">${item}</span>
-        </div>
+        </label>
       `).join('');
     }
 
