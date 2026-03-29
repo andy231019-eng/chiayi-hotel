@@ -2039,7 +2039,7 @@
       <textarea class="foods-form-input" id="food-comment" placeholder="主人評論" rows="2"></textarea>
       <div class="foods-form-category-row">
         <select class="foods-form-select" id="food-category"></select>
-        <button class="add-category-btn" id="add-category-btn">新增種類</button>
+        <button class="add-category-btn" id="food-add-category-btn" type="button">＋ 新增種類</button>
       </div>
       <button class="foods-form-submit" onclick="foodsAddItem()">送出</button>
     </div>
@@ -2106,7 +2106,10 @@
       <input  class="foods-form-input" id="edit-food-map"     type="url"  placeholder="Google Maps URL" />
       <input  class="foods-form-input" id="edit-food-img"     type="url"  placeholder="圖片 URL（選填）" />
       <textarea class="foods-form-input" id="edit-food-comment" placeholder="主人評論" rows="2"></textarea>
-      <select class="foods-form-select" id="edit-food-category"></select>
+      <div class="foods-form-category-row">
+        <select class="foods-form-select" id="edit-food-category"></select>
+        <button class="add-category-btn" id="edit-food-add-category-btn" type="button">＋ 新增種類</button>
+      </div>
       <div class="foods-edit-actions">
         <button class="foods-edit-cancel" onclick="foodsCloseEdit()">取消</button>
         <button class="foods-edit-save"   onclick="foodsSaveEdit()">儲存</button>
@@ -2867,45 +2870,64 @@
     // ── Foods ──
     let isAdmin = false;
     let foodsCache = [];
-    let categories = [];
+    let categoriesCache = [];
     let currentCategory = '全部';
     const tabsContainer = document.getElementById('foods-tabs');
-    const foodsCategoryDropdown = document.getElementById('food-category');
-    const editCategoryDropdown  = document.getElementById('edit-food-category');
 
-    db.collection('foodCategories').orderBy('created_at').onSnapshot(s => {
-      categories = ['全部', ...s.docs.map(d => d.data().name)];
-      renderTabs();
-      renderCategoryDropdown();
-    });
+    db.collection('foodCategories').orderBy('created_at').onSnapshot(
+      snapshot => {
+        categoriesCache = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderCategoryOptions();
+        renderCategoryTabs();
+      },
+      err => {
+        console.warn('foodCategories read/write blocked', err);
+      }
+    );
 
-    function renderTabs() {
-      tabsContainer.innerHTML = categories.map(c =>
+    function renderCategoryTabs() {
+      const tabs = ['全部', ...categoriesCache.map(c => c.name)];
+      tabsContainer.innerHTML = tabs.map(c =>
         `<button class="foods-tab ${c === currentCategory ? 'active' : ''}" onclick="selectCategory(${JSON.stringify(c)})">${escHtml(c)}</button>`
       ).join('');
     }
 
-    function renderCategoryDropdown() {
-      const opts = categories.filter(c => c !== '全部').map(c => `<option>${escHtml(c)}</option>`).join('');
-      foodsCategoryDropdown.innerHTML = opts;
-      editCategoryDropdown.innerHTML  = opts;
+    function renderCategoryOptions() {
+      const addSel  = document.getElementById('food-category');
+      const editSel = document.getElementById('edit-food-category');
+      const prevAdd  = addSel.value;
+      const prevEdit = editSel.value;
+      if (!categoriesCache.length) {
+        const ph = '<option value="">請先新增種類</option>';
+        addSel.innerHTML  = ph;
+        editSel.innerHTML = ph;
+        return;
+      }
+      const opts = categoriesCache.map(c => `<option value="${escHtml(c.name)}">${escHtml(c.name)}</option>`).join('');
+      addSel.innerHTML  = opts;
+      editSel.innerHTML = opts;
+      if (prevAdd  && addSel.querySelector(`option[value="${CSS.escape(prevAdd)}"]`))  addSel.value  = prevAdd;
+      if (prevEdit && editSel.querySelector(`option[value="${CSS.escape(prevEdit)}"]`)) editSel.value = prevEdit;
     }
 
     function selectCategory(c) {
       currentCategory = c;
-      renderTabs();
+      renderCategoryTabs();
       renderFoods(foodsCache);
     }
 
-    document.getElementById('add-category-btn').onclick = () => {
+    function addFoodCategory() {
       const name = prompt('輸入新種類');
       if (name && name.trim()) {
         db.collection('foodCategories').add({
           name: name.trim(),
           created_at: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        }).catch(err => console.warn('foodCategories read/write blocked', err));
       }
-    };
+    }
+
+    document.getElementById('food-add-category-btn').onclick      = addFoodCategory;
+    document.getElementById('edit-food-add-category-btn').onclick  = addFoodCategory;
 
     function onAdminPinSuccess() {
       isAdmin = true;
