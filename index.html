@@ -480,29 +480,29 @@
       text-align: center;
     }
 
-    .foods-admin-badge {
+    #foods-admin-gear {
       position: fixed;
-      top: 12px;
-      right: 12px;
-      z-index: 20;
-      background: rgba(111, 162, 142, 0.25);
-      border: 1px solid rgba(111, 162, 142, 0.5);
-      border-radius: 20px;
-      color: rgba(255, 255, 255, 0.75);
-      font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
-      font-size: 0.72rem;
-      padding: 0.25rem 0.7rem;
-      display: flex;
-      align-items: center;
+      bottom: 90px;
+      right: 20px;
+      z-index: 30;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(20, 20, 20, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #fff;
+      font-size: 1.4rem;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
     }
 
-    .foods-admin-badge.active {
-      background: rgba(58, 158, 98, 0.4);
-      border-color: rgba(58, 158, 98, 0.7);
-      color: #fff;
-    }
+    #foods-admin-gear:hover { background: rgba(60, 60, 60, 0.9); }
+    #foods-admin-gear.visible { display: flex; }
 
     .foods-add-btn {
       position: fixed;
@@ -578,7 +578,6 @@
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       padding: 1rem 1.2rem calc(env(safe-area-inset-bottom, 0px) + 1rem);
-      padding-top: 60px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -1887,7 +1886,7 @@
       <button class="pk-back" onclick="showSection('rooms')">&#8592; 返回</button>
       <span class="foods-title">附近好吃的</span>
     </div>
-    <button class="foods-admin-badge admin-btn" id="foods-admin-badge">管理模式</button>
+    <button id="foods-admin-gear">⚙</button>
     <button class="foods-add-btn" id="foods-add-btn" onclick="foodsToggleForm()">＋</button>
 
     <div class="foods-form" id="foods-form">
@@ -2105,7 +2104,9 @@
 
       // Foods-specific admin UI
       const onFoods = id === 'foods';
+      document.getElementById('foods-admin-gear').classList.toggle('visible', onFoods);
       document.getElementById('foods-add-btn').classList.toggle('visible', onFoods && adminMode);
+      if (!onFoods && isAdmin) { isAdmin = false; }
     }
 
     // ── Load saved values ──
@@ -2671,17 +2672,18 @@
     let isAdmin = false;
     let foodsCache = [];
 
-    function toggleAdmin() {
-      isAdmin = !isAdmin;
-      const badge = document.getElementById('foods-admin-badge');
-      if (badge) {
-        badge.textContent = isAdmin ? '管理中 ✓' : '管理模式';
-        badge.classList.toggle('active', isAdmin);
+    document.getElementById('foods-admin-gear').onclick = () => {
+      if (isAdmin) {
+        isAdmin = false;
+        renderFoods(foodsCache);
+        return;
       }
-      renderFoods(foodsCache);
-    }
-
-    document.getElementById('foods-admin-badge').onclick = toggleAdmin;
+      const pwd = prompt('輸入管理員密碼');
+      if (pwd === CORRECT_PIN) {
+        isAdmin = true;
+        renderFoods(foodsCache);
+      }
+    };
 
     function renderFoods(foods) {
       const list = document.getElementById('foods-list');
