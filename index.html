@@ -481,10 +481,10 @@
     }
 
     .foods-admin-badge {
-      position: fixed;
+      position: absolute;
       top: 12px;
       right: 12px;
-      z-index: 110;
+      z-index: 10;
       background: rgba(111, 162, 142, 0.25);
       border: 1px solid rgba(111, 162, 142, 0.5);
       border-radius: 20px;
@@ -492,12 +492,17 @@
       font-family: "Songti SC","Noto Serif TC","PMingLiU",serif;
       font-size: 0.72rem;
       padding: 0.25rem 0.7rem;
-      display: none;
+      display: flex;
       align-items: center;
-      pointer-events: none;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
     }
 
-    .foods-admin-badge.visible { display: flex; }
+    .foods-admin-badge.active {
+      background: rgba(58, 158, 98, 0.4);
+      border-color: rgba(58, 158, 98, 0.7);
+      color: #fff;
+    }
 
     .foods-add-btn {
       position: fixed;
@@ -628,10 +633,11 @@
 
     .food-admin-btns {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 8px;
+      right: 8px;
       display: none;
       gap: 6px;
+      z-index: 5;
     }
 
     .food-edit-btn,
@@ -1880,7 +1886,7 @@
       <button class="pk-back" onclick="showSection('rooms')">&#8592; 返回</button>
       <span class="foods-title">附近好吃的</span>
     </div>
-    <span class="foods-admin-badge" id="foods-admin-badge">管理模式</span>
+    <button class="foods-admin-badge admin-btn" id="foods-admin-badge">管理模式</button>
     <button class="foods-add-btn" id="foods-add-btn" onclick="foodsToggleForm()">＋</button>
 
     <div class="foods-form" id="foods-form">
@@ -2098,7 +2104,6 @@
 
       // Foods-specific admin UI
       const onFoods = id === 'foods';
-      document.getElementById('foods-admin-badge').classList.toggle('visible', onFoods && adminMode);
       document.getElementById('foods-add-btn').classList.toggle('visible', onFoods && adminMode);
     }
 
@@ -2146,14 +2151,12 @@
 
         uploadArea.classList.add('visible');
         document.getElementById('admin-panel-btn').classList.add('visible');
-        document.getElementById('foods-admin-badge').classList.toggle('visible', currentSection === 'foods');
         document.getElementById('foods-add-btn').classList.toggle('visible', currentSection === 'foods');
       } else {
         // Restore nav onclicks
         btnBooking.setAttribute('onclick', "showSection('booking')");
         btnRooms.setAttribute('onclick',   "showSection('rooms')");
         btnAbout.setAttribute('onclick',   "showComingSoonModal()");
-        document.getElementById('foods-admin-badge').classList.remove('visible');
         document.getElementById('foods-add-btn').classList.remove('visible');
         document.getElementById('foods-form').classList.remove('open');
 
@@ -2664,29 +2667,66 @@
     });
 
     // ── Foods ──
+    let isAdmin = false;
+    let foodsCache = [];
+
+    function toggleAdmin() {
+      isAdmin = !isAdmin;
+      const badge = document.getElementById('foods-admin-badge');
+      if (badge) {
+        badge.textContent = isAdmin ? '管理中 ✓' : '管理模式';
+        badge.classList.toggle('active', isAdmin);
+      }
+      renderFoods(foodsCache);
+    }
+
+    document.getElementById('foods-admin-badge').onclick = toggleAdmin;
+
     function renderFoods(foods) {
+      foodsCache = foods;
       const list = document.getElementById('foods-list');
       if (!list) return;
       if (!foods.length) {
         list.innerHTML = '<div class="foods-empty">尚無店家</div>';
         return;
       }
-      const adminDisplay = adminMode ? 'flex' : 'none';
-      list.innerHTML = foods.map(f => `
-        <div class="food-card" onclick="if(event.target.closest('.food-admin-btns'))return;window.open(${JSON.stringify(f.mapUrl || '')}, '_blank')">
-          ${f.image
-            ? `<img class="food-card-img" src="${escHtml(f.image)}" alt="${escHtml(f.name)}" loading="lazy" />`
-            : `<div class="food-card-img-placeholder">🍽</div>`}
-          <div class="food-card-body">
-            <div class="food-card-name">${escHtml(f.name || '')}</div>
-            ${f.comment ? `<div class="food-card-comment">${escHtml(f.comment)}</div>` : ''}
-          </div>
-          <div class="food-admin-btns" style="display:${adminDisplay}">
-            <button class="food-edit-btn"   onclick="event.stopPropagation();foodsOpenEdit('${f.id}',${JSON.stringify(f.name||'')},${JSON.stringify(f.mapUrl||'')},${JSON.stringify(f.image||'')},${JSON.stringify(f.comment||'')})">編輯</button>
-            <button class="food-delete-btn" onclick="event.stopPropagation();foodsDelete('${f.id}')">刪除</button>
-          </div>
-        </div>
-      `).join('');
+      list.innerHTML = '';
+      foods.forEach(f => {
+        const card = document.createElement('div');
+        card.className = 'food-card';
+        card.onclick = e => {
+          if (e.target.closest('.food-admin-btns')) return;
+          window.open(f.mapUrl || '', '_blank');
+        };
+
+        card.innerHTML = f.image
+          ? `<img class="food-card-img" src="${escHtml(f.image)}" alt="${escHtml(f.name)}" loading="lazy" />`
+          : `<div class="food-card-img-placeholder">🍽</div>`;
+
+        const body = document.createElement('div');
+        body.className = 'food-card-body';
+        body.innerHTML = `<div class="food-card-name">${escHtml(f.name || '')}</div>
+          ${f.comment ? `<div class="food-card-comment">${escHtml(f.comment)}</div>` : ''}`;
+        card.appendChild(body);
+
+        const adminBtns = document.createElement('div');
+        adminBtns.className = 'food-admin-btns';
+        adminBtns.style.display = isAdmin ? 'flex' : 'none';
+        adminBtns.innerHTML = `
+          <button class="food-edit-btn">編輯</button>
+          <button class="food-delete-btn">刪除</button>`;
+        adminBtns.querySelector('.food-edit-btn').onclick = e => {
+          e.stopPropagation();
+          foodsOpenEdit(f.id, f.name || '', f.mapUrl || '', f.image || '', f.comment || '');
+        };
+        adminBtns.querySelector('.food-delete-btn').onclick = e => {
+          e.stopPropagation();
+          foodsDelete(f.id);
+        };
+        card.appendChild(adminBtns);
+
+        list.appendChild(card);
+      });
     }
 
     const foodsRef = db.collection('foods').orderBy('created_at');
