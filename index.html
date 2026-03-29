@@ -2683,7 +2683,6 @@
     document.getElementById('foods-admin-badge').onclick = toggleAdmin;
 
     function renderFoods(foods) {
-      foodsCache = foods;
       const list = document.getElementById('foods-list');
       if (!list) return;
       if (!foods.length) {
@@ -2731,7 +2730,10 @@
 
     const foodsRef = db.collection('foods').orderBy('created_at');
     foodsRef.onSnapshot(
-      snapshot => renderFoods(snapshot.docs.map(d => ({ id: d.id, ...d.data() }))),
+      snapshot => {
+        foodsCache = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderFoods(foodsCache);
+      },
       err => {
         console.error('Foods snapshot error:', err);
         const list = document.getElementById('foods-list');
